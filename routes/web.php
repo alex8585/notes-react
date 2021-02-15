@@ -56,3 +56,7 @@ Route::get('reports')->name('reports')->uses('ReportsController')->middleware('a
 Route::get('500', function () {
     echo $fail;
 });
+
+// Modal Demo Page
+Route::get('modals')->name('modals')->uses('ModalController@index')->middleware('auth');
+Route::post('organizationsFromModal')->name('organizations.storeFromModal')->uses('OrganizationsController@storeFromModal')->middleware('auth');
