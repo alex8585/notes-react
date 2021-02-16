@@ -11,6 +11,9 @@
 |
 */
 
+
+
+
 // Auth
 Route::get('login')->name('login')->uses('Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('login')->name('login.attempt')->uses('Auth\LoginController@login')->middleware('guest');
@@ -32,6 +35,8 @@ Route::put('users/{user}/restore')->name('users.restore')->uses('UsersController
 Route::get('/img/{path}', 'ImagesController@show')->where('path', '.*');
 
 // Organizations
+
+
 Route::get('organizations')->name('organizations')->uses('OrganizationsController@index')->middleware('remember', 'auth');
 Route::get('organizations/create')->name('organizations.create')->uses('OrganizationsController@create')->middleware('auth');
 Route::post('organizations')->name('organizations.store')->uses('OrganizationsController@store')->middleware('auth');
@@ -41,13 +46,27 @@ Route::delete('organizations/{organization}')->name('organizations.destroy')->us
 Route::put('organizations/{organization}/restore')->name('organizations.restore')->uses('OrganizationsController@restore')->middleware('auth');
 
 // Contacts
-Route::get('contacts')->name('contacts')->uses('ContactsController@index')->middleware('remember', 'auth');
+Route::get('contacts')->uses('ContactsController@index')->name('contacts')->middleware('remember', 'auth');
 Route::get('contacts/create')->name('contacts.create')->uses('ContactsController@create')->middleware('auth');
 Route::post('contacts')->name('contacts.store')->uses('ContactsController@store')->middleware('auth');
 Route::get('contacts/{contact}/edit')->name('contacts.edit')->uses('ContactsController@edit')->middleware('auth');
 Route::put('contacts/{contact}')->name('contacts.update')->uses('ContactsController@update')->middleware('auth');
 Route::delete('contacts/{contact}')->name('contacts.destroy')->uses('ContactsController@destroy')->middleware('auth');
 Route::put('contacts/{contact}/restore')->name('contacts.restore')->uses('ContactsController@restore')->middleware('auth');
+
+
+// Categories
+Route::get('categories')->uses('CategoriesController@index')->name('categories')->middleware('remember', 'auth');
+Route::get('categories/create')->name('categories.create')->uses('CategoriesController@create')->middleware('auth');
+Route::post('categories')->name('categories.store')->uses('CategoriesController@store')->middleware('auth');
+Route::get('categories/{contact}/edit')->name('categories.edit')->uses('CategoriesController@edit')->middleware('auth');
+Route::put('categories/{contact}')->name('categories.update')->uses('CategoriesController@update')->middleware('auth');
+Route::delete('categories/{contact}')->name('categories.destroy')->uses('CategoriesController@destroy')->middleware('auth');
+Route::put('categories/{contact}/restore')->name('categories.restore')->uses('CategoriesController@restore')->middleware('auth');
+
+
+
+
 
 // Reports
 Route::get('reports')->name('reports')->uses('ReportsController')->middleware('auth');

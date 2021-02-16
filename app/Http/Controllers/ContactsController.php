@@ -7,7 +7,9 @@ use App\Http\Requests\ContactUpdateRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
 use App\Http\Resources\UserOrganizationCollection;
+use App\Http\Resources\UserResource;
 use App\Models\Contact;
+use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +18,9 @@ use Illuminate\Support\Facades\Redirect;
 
 class ContactsController extends Controller
 {
-    public function index()
+    public function index(Request $request, User $user)
     {
+
         return Inertia::render('Contacts/Index', [
             'filters' => Request::all('search', 'trashed'),
             'contacts' => new ContactCollection(

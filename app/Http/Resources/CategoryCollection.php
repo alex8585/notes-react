@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ContactCollection extends ResourceCollection
+class CategoryCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -17,10 +17,7 @@ class ContactCollection extends ResourceCollection
         return $this->collection->map->only(
             'id',
             'name',
-            'phone',
-            'city',
             'deleted_at',
-            'organization'
         );
     }
 }
