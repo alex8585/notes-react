@@ -1,12 +1,15 @@
 import React from 'react';
 
-export default ({ onDelete, children }) => (
+export default ({ onDelete, children, className }) => {
+  className = className ?? "btn btn-red";
+  return (
   <button
-    className="text-red-600 focus:outline-none hover:underline"
+    className={className}
     tabIndex="-1"
     type="button"
     onClick={onDelete}
   >
     {children}
   </button>
-);
+  );
+};

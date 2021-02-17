@@ -1,10 +1,10 @@
 import React from 'react';
 
 export default function SmallButton(props) {
-    const { type = 'button', children, onClick, className = '' } = props;
+    const { type = 'button', children, onClick, className = 'btn btn-red' } = props;
     return (
         <button
-            className={`bg-primary hover:bg-primary-light text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${className}`}
+            className={className}
             type={type}
             onClick={onClick}
         >

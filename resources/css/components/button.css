@@ -2,6 +2,23 @@
   @apply px-6 py-3 rounded bg-indigo-700 text-white text-sm font-bold whitespace-nowrap hover:bg-orange-500 focus:bg-orange-500;
 }
 
+.btn {
+  @apply py-2 px-4 font-semibold rounded-lg shadow-md inline-flex items-center mx-1; 
+}
+
+.btn-green {
+  @apply text-white bg-green-500 hover:bg-green-700;
+}
+
+.btn-gray {
+  @apply bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold bg-gray-500 hover:bg-gray-700 ;
+}
+
+.btn-red {
+  @apply bg-red-300 hover:bg-red-400 text-gray-800 font-bold bg-red-500 hover:bg-red-700 ;
+}
+/* bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center */
+
 .btn-spinner,
 .btn-spinner:after {
   border-radius: 50%;

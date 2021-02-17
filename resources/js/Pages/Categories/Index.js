@@ -6,8 +6,10 @@ import Icon from '@/Shared/Icon';
 import Pagination from '@/Shared/Pagination';
 import SearchFilter from '@/Shared/SearchFilter';
 import SmallButton from "@/Shared/SmallButton";
-import { FaEdit } from "react-icons/fa";
-import Button from 'react-bootstrap/Button';
+import DeleteButton from '@/Shared/DeleteButton';
+import { Inertia } from '@inertiajs/inertia';
+import {useState} from 'react';
+import ConfirmModal from "@/Shared/Modals/ConfirmModal";
 
 export default () => {
   const { categories } = usePage().props;
@@ -16,6 +18,21 @@ export default () => {
     data,
     meta: { links }
   } = categories;
+
+  
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [categoryId, setCategoryId] = useState(null);
+
+  let onConfirmOpen = (id) => {
+      setCategoryId(id);
+      setConfirmOpen(true);
+  }
+
+
+  let onConfirm = () => {
+      Inertia.delete(route('categories.destroy', categoryId));
+  }
+
 
   return (
     <Layout>
@@ -51,31 +68,24 @@ export default () => {
                       {name}
                     </td>
                     <td  className="flex items-center">
-                    {/* <InertiaLink
-                        href={route('categories.edit', id)}
-                        className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
-                      >
-                      aaa
-                    </InertiaLink> */}
-
-                      <InertiaLink
-                        href={route('categories.edit', id)}
-                        className="btn-indigo focus:outline-none flex items-center  focus:text-indigo-700 focus:outline-none"
-                      >
-                       <FaEdit/> 
-                          <span>Edit</span>
+                      <InertiaLink className="btn btn-gray" href={route('categories.edit', id)}>
+                        <Icon name="edit"/>
+                        <span>Edit</span>
                       </InertiaLink>
-                      <InertiaLink
-                        href={route('categories.edit', id)}
-                        className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
-                      >
-                       <Icon
+
+                      
+                      <InertiaLink className="btn btn-green" href={route('categories.edit', id)} >
+                        <Icon name="view" />
+                        <span>View</span>
+                      </InertiaLink>
+                     
+                      <SmallButton 
+                            onClick={() => onConfirmOpen(id)}>
+                        <Icon
                             name="trash"
-                            className="w-6 h-6 text-red-400 fill-current"
                         />
-                        Delete
-                      </InertiaLink>
-
+                        <span>Delete</span>
+                      </SmallButton>
                     </td>
                     
                   </tr>
@@ -93,6 +103,16 @@ export default () => {
         </div>
         <Pagination links={links} />
       </div>
+
+      <ConfirmModal
+        title="Delete category ?"
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={onConfirm}
+      >
+        Are you sure you want to delete this category?
+      </ConfirmModal>
+
     </Layout>
   );
 };
