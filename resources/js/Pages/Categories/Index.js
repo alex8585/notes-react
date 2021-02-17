@@ -6,10 +6,12 @@ import Icon from '@/Shared/Icon';
 import Pagination from '@/Shared/Pagination';
 import SearchFilter from '@/Shared/SearchFilter';
 import SmallButton from "@/Shared/SmallButton";
-import DeleteButton from '@/Shared/DeleteButton';
 import { Inertia } from '@inertiajs/inertia';
 import {useState} from 'react';
 import ConfirmModal from "@/Shared/Modals/ConfirmModal";
+import ModalWithButtons from '@/Shared/Modals/ModalWithButtons';
+
+
 
 export default () => {
   const { categories } = usePage().props;
@@ -22,12 +24,20 @@ export default () => {
   
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [categoryId, setCategoryId] = useState(null);
+  const [viewIsOpen, setViewIsOpen] = useState(false);
 
+  const [curentCategory, setCurentCategory] = useState(null);
+
+  let onViewOpen = (category) => {
+    setCurentCategory(category);
+    setViewIsOpen(true)
+  }
+
+ 
   let onConfirmOpen = (id) => {
       setCategoryId(id);
       setConfirmOpen(true);
   }
-
 
   let onConfirm = () => {
       Inertia.delete(route('categories.destroy', categoryId));
@@ -68,22 +78,23 @@ export default () => {
                       {name}
                     </td>
                     <td  className="flex items-center">
+                      
+                      <SmallButton className="btn btn-green"
+                        onClick={ ()=> onViewOpen({id, name})}>
+                        <Icon name="view" />
+                        <span>View</span>
+                      </SmallButton>
+
                       <InertiaLink className="btn btn-gray" href={route('categories.edit', id)}>
                         <Icon name="edit"/>
                         <span>Edit</span>
                       </InertiaLink>
 
                       
-                      <InertiaLink className="btn btn-green" href={route('categories.edit', id)} >
-                        <Icon name="view" />
-                        <span>View</span>
-                      </InertiaLink>
-                     
+                      
                       <SmallButton 
-                            onClick={() => onConfirmOpen(id)}>
-                        <Icon
-                            name="trash"
-                        />
+                        onClick={() => onConfirmOpen(id)}>
+                        <Icon name="trash" />
                         <span>Delete</span>
                       </SmallButton>
                     </td>
@@ -104,14 +115,45 @@ export default () => {
         <Pagination links={links} />
       </div>
 
-      <ConfirmModal
-        title="Delete category ?"
-        open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={onConfirm}
-      >
-        Are you sure you want to delete this category?
-      </ConfirmModal>
+        <ConfirmModal
+          title="Delete category ?"
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={onConfirm}
+        >
+          <span>Are you sure you want to delete this category?</span>
+        </ConfirmModal>
+
+
+
+        <ModalWithButtons
+            title="Category details"
+            open={viewIsOpen}
+            onClose={() => setViewIsOpen(false)}
+            onConfirm={() => setViewIsOpen(false)}
+            
+        >
+            <div className="bg-white rounded shadow overflow-hidden max-w-3xl">
+            <div>
+              <span>id: </span>
+              <span> {curentCategory ?  curentCategory.id :''}</span>
+
+            </div>
+            
+            <div>
+              <span>Category name: </span>
+              <span> {curentCategory ? curentCategory.name :''}</span>
+            </div>
+
+            </div>
+
+        </ModalWithButtons>
+
+
+
+
+
+
 
     </Layout>
   );
