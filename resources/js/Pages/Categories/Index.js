@@ -5,6 +5,9 @@ import Layout from '@/Shared/Layout';
 import Icon from '@/Shared/Icon';
 import Pagination from '@/Shared/Pagination';
 import SearchFilter from '@/Shared/SearchFilter';
+import SmallButton from "@/Shared/SmallButton";
+import { FaEdit } from "react-icons/fa";
+import Button from 'react-bootstrap/Button';
 
 export default () => {
   const { categories } = usePage().props;
@@ -34,6 +37,7 @@ export default () => {
             <thead>
               <tr className="font-bold text-left">
                 <th className="px-6 pt-5 pb-4">Name</th>
+                <th className="px-6 pt-5 pb-4">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -43,21 +47,36 @@ export default () => {
                     key={id}
                     className="hover:bg-gray-100 focus-within:bg-gray-100"
                   >
-                    <td className="border-t">
+                    <td className="border-t items-center px-6 py-4">
+                      {name}
+                    </td>
+                    <td  className="flex items-center">
+                    {/* <InertiaLink
+                        href={route('categories.edit', id)}
+                        className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
+                      >
+                      aaa
+                    </InertiaLink> */}
+
+                      <InertiaLink
+                        href={route('categories.edit', id)}
+                        className="btn-indigo focus:outline-none flex items-center  focus:text-indigo-700 focus:outline-none"
+                      >
+                       <FaEdit/> 
+                          <span>Edit</span>
+                      </InertiaLink>
                       <InertiaLink
                         href={route('categories.edit', id)}
                         className="flex items-center px-6 py-4 focus:text-indigo-700 focus:outline-none"
                       >
-                        {name}
-                        {deleted_at && (
-                          <Icon
+                       <Icon
                             name="trash"
-                            className="flex-shrink-0 w-3 h-3 ml-2 text-gray-400 fill-current"
-                          />
-                        )}
+                            className="w-6 h-6 text-red-400 fill-current"
+                        />
+                        Delete
                       </InertiaLink>
+
                     </td>
-                    
                     
                   </tr>
                 )
@@ -65,7 +84,7 @@ export default () => {
               {data.length === 0 && (
                 <tr>
                   <td className="px-6 py-4 border-t" colSpan="4">
-                    No contacts found.
+                    No categories found.
                   </td>
                 </tr>
               )}

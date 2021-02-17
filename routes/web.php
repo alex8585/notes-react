@@ -59,10 +59,10 @@ Route::put('contacts/{contact}/restore')->name('contacts.restore')->uses('Contac
 Route::get('categories')->uses('CategoriesController@index')->name('categories')->middleware('remember', 'auth');
 Route::get('categories/create')->name('categories.create')->uses('CategoriesController@create')->middleware('auth');
 Route::post('categories')->name('categories.store')->uses('CategoriesController@store')->middleware('auth');
-Route::get('categories/{contact}/edit')->name('categories.edit')->uses('CategoriesController@edit')->middleware('auth');
-Route::put('categories/{contact}')->name('categories.update')->uses('CategoriesController@update')->middleware('auth');
-Route::delete('categories/{contact}')->name('categories.destroy')->uses('CategoriesController@destroy')->middleware('auth');
-Route::put('categories/{contact}/restore')->name('categories.restore')->uses('CategoriesController@restore')->middleware('auth');
+Route::get('categories/{category}/edit')->name('categories.edit')->uses('CategoriesController@edit')->middleware('auth');
+Route::put('categories/{category}')->name('categories.update')->uses('CategoriesController@update')->middleware('auth', 'check-owner');
+Route::delete('categories/{category}')->name('categories.destroy')->uses('CategoriesController@destroy')->middleware('auth', 'check-owner');
+Route::put('categories/{category}/restore')->name('categories.restore')->uses('CategoriesController@restore')->middleware('auth');
 
 
 

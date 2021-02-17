@@ -12,7 +12,7 @@
     "dependencies": {
         "@babel/preset-react": "^7.12.10",
         "@inertiajs/inertia": "^0.8.4",
-        "@inertiajs/inertia-react": "^0.5.2",
+        "@inertiajs/inertia-react": "^0.5.3",
         "@inertiajs/progress": "^0.2.4",
         "@sentry/browser": "^5.30.0",
         "@tailwindcss/postcss7-compat": "^2.0.2",
@@ -27,8 +27,9 @@
         "postcss-import": "^12.0.1",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
-        "react-helmet": "^5.2.1",
-        "react-use": "^13.27.1",
+        "react-helmet": "^6.1.0",
+        "react-icons": "^4.2.0",
+        "react-use": "^17.1.1",
         "resolve-url-loader": "^3.1.2",
         "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2"
     },

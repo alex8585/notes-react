@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\User;
+use App\Models\Category;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Resources\CategoryCollection;
-
+use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoriesController extends Controller
 {
@@ -24,19 +26,10 @@ class CategoriesController extends Controller
     {
 
         $categories = Auth::user()->categories()->paginate()->appends(Request::all());
-        return Inertia::render('Categories/Index', ['categories' => new ResourceCollection($categories)]);
-        //dd($c);
-        // return Inertia::render('Contacts/Index', [
-        //     'filters' => Request::all('search', 'trashed'),
-        //     'contacts' => new ContactCollection(
-        //         Auth::user()->account->contacts()
-        //             ->with('organization')
-        //             ->orderByName()
-        //             ->filter(Request::only('search', 'trashed'))
-        //             ->paginate()
-        //             ->appends(Request::all())
-        //     ),
-        // ]);
+        return Inertia::render(
+            'Categories/Index',
+            ['categories' => new ResourceCollection($categories)]
+        );
     }
 
     /**
@@ -46,7 +39,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Categories/Create');
     }
 
     /**
@@ -55,9 +48,14 @@ class CategoriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
-        //
+
+        Auth::user()->categories()->create(
+            $request->validated()
+        );
+
+        return Redirect::route('categories')->with('success', 'Category created.');
     }
 
     /**
@@ -77,9 +75,11 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return Inertia::render('Categories/Edit', [
+            'category' => new JsonResource($category),
+        ]);
     }
 
     /**
@@ -89,9 +89,13 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Category $category, CategoryUpdateRequest $request)
     {
-        //
+        $category->update(
+            $request->validated()
+        );
+
+        return Redirect::route('categories')->with('success', 'Category created.');
     }
 
     /**
@@ -100,8 +104,10 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        $category->delete();
+
+        return Redirect::route('categories')->with('success', 'Category deleted.');
     }
 }
