@@ -13,6 +13,9 @@ import ModalWithButtons from '@/Shared/Modals/ModalWithButtons';
 import TextInput from '@/Shared/TextInput';
 import SelectInput from '@/Shared/SelectInput';
 import LoadingButton from '@/Shared/LoadingButton';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import parse from 'html-react-parser';
 
 export default () => {
   const {categories,  errors, items } = usePage().props;
@@ -64,6 +67,13 @@ export default () => {
     }));
   }
 
+  function handleChangEditor(event, editor) {
+    const data = editor.getData();
+    setValues(values => ({
+      ...values,
+      'body': data
+    }));
+  }
   
   function handleSubmit(e) {
     e.preventDefault();
@@ -196,7 +206,7 @@ export default () => {
                 </div>
                 <div className='my-4'>
                   <span>Note text: </span>
-                  <span> {curentItem ? curentItem.body :''}</span>
+                  <span> {(curentItem && curentItem.body) ? parse(curentItem.body) : ''}</span>
                 </div>
 
                 <div className='my-4'>
@@ -257,15 +267,24 @@ export default () => {
                         </option>
                       ))}
                     </SelectInput>
-                    
-                    <TextInput
+
+                    <div className="w-full pb-8 pr-6 ">
+                      <CKEditor 
+                          editor={ ClassicEditor }
+                          data={values.body}
+                          onChange={ (event, editor) => handleChangEditor( event, editor ) }
+                      />
+                      {errors.body && <div className="form-error">{errors.body}</div>}
+                    </div>
+
+                    {/* <TextInput
                       className="w-full pb-8 pr-6 lg:w-1/2"
                       label="Note Body"
                       name="body"
                       errors={errors.body}
                       value={values.body}
                       onChange={handleChange}
-                    />
+                    /> */}
                 </div>
 
               </form>

@@ -4,6 +4,7 @@ import { InertiaApp } from '@inertiajs/inertia-react';
 import { InertiaProgress } from '@inertiajs/progress';
 import * as Sentry from '@sentry/browser';
 
+
 InertiaProgress.init({
   color: '#ED8936',
   showSpinner: true
