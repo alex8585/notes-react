@@ -65,6 +65,19 @@ Route::delete('categories/{category}')->name('categories.destroy')->uses('Catego
 Route::put('categories/{category}/restore')->name('categories.restore')->uses('CategoriesController@restore')->middleware('auth');
 
 
+// Notes
+Route::get('notes')->uses('NotesController@index')->name('notes')->middleware('remember', 'auth');
+Route::get('notes/create')->name('notes.create')->uses('NotesController@create')->middleware('auth');
+Route::post('notes')->name('notes.store')->uses('NotesController@store')->middleware('auth');
+Route::get('notes/{note}/edit')->name('notes.edit')->uses('NotesController@edit')->middleware('auth');
+Route::put('notes/{note}')->name('notes.update')->uses('NotesController@update')->middleware('auth', 'check-owner');
+Route::delete('notes/{note}')->name('notes.destroy')->uses('NotesController@destroy')->middleware('auth', 'check-owner');
+Route::put('notes/{note}/restore')->name('notes.restore')->uses('NotesController@restore')->middleware('auth');
+
+
+
+
+
 
 
 
