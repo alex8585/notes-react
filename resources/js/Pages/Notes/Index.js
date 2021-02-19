@@ -17,6 +17,12 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import parse from 'html-react-parser';
 
+
+import UiModal from '../../Shared/UiModal';
+
+
+
+
 export default () => {
   const {categories,  errors, items } = usePage().props;
   
@@ -33,6 +39,7 @@ export default () => {
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
   const [viewIsOpen, setViewIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
+
   
 
   const [values, setValues] = useState({});
@@ -92,13 +99,18 @@ export default () => {
   }
 
 
+
+  
+
+
+
   return (
     <Layout>
       <Helmet title="notes" />
       <div>
         <h1 className="mb-8 text-3xl font-bold">Notes</h1>
         <div className="flex items-center justify-between mb-6">
-          
+
           <InertiaLink
             className="btn-indigo focus:outline-none"
             href={route('notes.create')}
@@ -218,8 +230,71 @@ export default () => {
 
         </ModalWithButtons>
 
+        <UiModal handleClose={ () => setEditIsOpen(false)} 
+                 open={editIsOpen}
+                 buttons={
+                <React.Fragment>
+                    <div className="p-1">
+                    <LoadingButton
+                      onClick={handleSubmit}
+                      loading={sending}
+                      type="submit"
+                      className="btn-indigo"
+                    >
+                      Save
+                    </LoadingButton>
+                    </div>
+                </React.Fragment>
+            }
+          
+          
+          >
+            <div className="bg-white rounded shadow overflow-hidden max-w-3xl">
+                <form>
+                  <div className="flex flex-wrap p-8 -mb-8 -mr-6">
+                      <TextInput
+                        className="w-full pb-8 pr-6 lg:w-1/2"
+                        label="Note title"
+                        name="title"
+                        errors={errors.title}
+                        value={values.title}
+                        onChange={handleChange}
+                      />
 
-        <ModalWithButtons
+                      <SelectInput
+                        className="w-full pb-8 pr-6 lg:w-1/2"
+                        label="Category"
+                        name="category_id"
+                        errors={errors.category_id}
+                        value={values.category_id}
+                        onChange={handleChange}
+                      >
+                        <option value=""></option>
+                        {categories.map(({ id, name }) => (
+                          <option key={id} value={id}>
+                            {name}
+                          </option>
+                        ))}
+                      </SelectInput>
+
+                      <div className="w-full pb-8 pr-6 ">
+                        <CKEditor 
+                            editor={ ClassicEditor }
+                            data={values.body}
+                            onChange={ (event, editor) => handleChangEditor( event, editor ) }
+                        />
+                        {errors.body && <div className="form-error">{errors.body}</div>}
+                      </div>
+
+                      
+                  </div>
+
+                </form>
+            </div>
+        </UiModal>
+
+
+        {/* <ModalWithButtons
             title="Note edit"
             open={editIsOpen}
             onClose={() => setEditIsOpen(false)}
@@ -277,21 +352,14 @@ export default () => {
                       {errors.body && <div className="form-error">{errors.body}</div>}
                     </div>
 
-                    {/* <TextInput
-                      className="w-full pb-8 pr-6 lg:w-1/2"
-                      label="Note Body"
-                      name="body"
-                      errors={errors.body}
-                      value={values.body}
-                      onChange={handleChange}
-                    /> */}
+                    
                 </div>
 
               </form>
 
             </div>
 
-        </ModalWithButtons>
+        </ModalWithButtons> */}
 
     </Layout>
   );

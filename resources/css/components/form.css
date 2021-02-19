@@ -31,3 +31,7 @@
 .form-select.error {
   @apply border-red-400 focus:border-red-400 focus:ring-red-400;
 }
+
+.MuiPaper-root {
+  @apply p-2
+}
