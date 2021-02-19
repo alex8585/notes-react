@@ -1,0 +1,8 @@
+/*Modals */
+.MuiPaper-root {
+    @apply p-2 ;
+}
+
+.MuiDialogContent-root {
+    min-width: 500px;
+}

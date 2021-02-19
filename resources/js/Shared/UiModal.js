@@ -29,7 +29,7 @@ export default function DraggableDialog(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          Subscribe
+        {props.title}
         </DialogTitle>
         <DialogContent>
           {props.children}

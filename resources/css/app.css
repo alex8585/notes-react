@@ -5,6 +5,7 @@
 /* Components */
 @import 'components/button';
 @import 'components/form';
+@import 'components/common';
 
 /* Utilities */
 @import 'tailwindcss/utilities';
