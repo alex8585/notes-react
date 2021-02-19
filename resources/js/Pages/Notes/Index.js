@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect,useMemo } from 'react';
 import Helmet from 'react-helmet';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Shared/Layout';
@@ -9,18 +9,31 @@ import SmallButton from "@/Shared/SmallButton";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import EditModal from './EditModal';
 import ViewModal from './ViewModal';
+import { Inertia } from '@inertiajs/inertia';
 
 export default () => {
-  const {categories,  errors, items } = usePage().props;
+  const {categories,  errors, items, request } = usePage().props;
   const { data, meta: { links } } = items;
-
+  const { sort, direction, page } = request;
   
+  
+
+  const [sortObj, setSortObj] = useState({sort, direction, page});
   const [itemId, setItemId] = useState(null);
   const [curentItem, setcurentItem] = useState(null);
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
   const [viewIsOpen, setViewIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
+
+
+  useEffect(() => {
+    if(sortObj.direction ==  direction && sortObj.sort == sort) {
+        return;
+    }
+    Inertia.get(route('notes'), sortObj);
+  },[sortObj.direction, sortObj.sort])
+
 
   let onViewOpen = (item) => {
       setcurentItem(item);
@@ -35,6 +48,16 @@ export default () => {
   function onEdit(item) {
       setcurentItem(item);
       setEditIsOpen(true);
+  }
+
+  function sortHanle(e, sort) {
+    e.preventDefault;
+
+    let newDirection = 'asc'
+    if(sortObj.direction == 'asc') {
+      newDirection = 'desc'
+    } 
+    setSortObj( oldState => ({...oldState, page, sort, direction:newDirection}) )
   }
 
   return (
@@ -56,14 +79,22 @@ export default () => {
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="font-bold text-left">
-                <th className="px-6 pt-5 pb-4">Id</th>
-                <th className="px-6 pt-5 pb-4">Title</th>
-                <th className="px-6 pt-5 pb-4">Category</th>
-                <th className="px-6 pt-5 pb-4">Actions</th>
+                <th className="px-6 pt-5 pb-4">
+                    <a className='cursor-pointer' onClick={(e)=>sortHanle(e, 'id')}> id </a>
+                </th>
+                <th className="px-6 pt-5 pb-4">
+                    <a className='cursor-pointer' onClick={(e)=>sortHanle(e, 'title')}> Title </a>
+                </th>
+                <th className="px-6 pt-5 pb-4">
+                    Category 
+                </th>
+                <th className="px-6 pt-5 pb-4">
+                    Actions 
+                </th>
               </tr>
             </thead>
             <tbody>
-              { data.length > 0 && data.map( item => {
+              { data.length > 0 && data.map( item  => {
                     const { id, title, category } = item;
                     return (
                         <tr key={id}

@@ -9,7 +9,7 @@ import { Inertia } from '@inertiajs/inertia';
 
 export default function EditModal(props) {
     const { editIsOpen, setEditIsOpen,  
-         errors, categories, curentItem} = props;
+          errors, categories, curentItem} = props;
 
     const [sending, setSending] = useState(false);
     const [values, setValues] = useState(curentItem);
@@ -18,7 +18,6 @@ export default function EditModal(props) {
         setValues(()=>({...curentItem}))
     },[curentItem])
 
-   
     function handleChange(e) {
         const key = e.target.name;
         const value = e.target.value;
@@ -57,8 +56,8 @@ export default function EditModal(props) {
 
     return (    
         <UiModal title="Edit note" handleClose={ () => setEditIsOpen(false)} 
-                 open={editIsOpen}
-                 buttons={
+                  open={editIsOpen}
+                  buttons={
                 <React.Fragment>
                     <div className="p-1">
                     <LoadingButton

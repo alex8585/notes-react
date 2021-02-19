@@ -6,10 +6,8 @@ import { Inertia } from '@inertiajs/inertia';
 export default function DeleteConfirmModal(props) {
     const { open, itemId, setConfirmIsOpen } = props;
 
-    const [sending, setSending] = useState(false);
     let onConfirm = () => {
         Inertia.delete(route('notes.destroy', itemId));
-        setSending(true);
         setConfirmIsOpen(false)
     }
 
@@ -25,12 +23,12 @@ export default function DeleteConfirmModal(props) {
                 <React.Fragment>
                     <div className="p-1">
                     <LoadingButton
-                      onClick={onConfirm}
-                      loading={sending}
-                      type="submit"
-                      className="btn-indigo"
+                        onClick={onConfirm}
+                        loading={false}
+                        type="submit"
+                        className="btn-indigo"
                     >
-                      Delete
+                        Delete
                     </LoadingButton>
                     </div>
                 </React.Fragment>

@@ -40,11 +40,11 @@ export default ({ links = [] }) => {
   if (links.length === 3) return null;
   return (
     <div className="flex flex-wrap mt-6 -mb-1">
-      {links.map(({ active, label, url }) => {
+      {links.map(({ active, label, url }, i) => {
         return url === null ? (
-          <PageInactive key={label} label={label} />
+          <PageInactive key={i} label={label} />
         ) : (
-          <PageLink key={label} label={label} active={active} url={url} />
+          <PageLink key={i} label={label} active={active} url={url} />
         );
       })}
     </div>

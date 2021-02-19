@@ -22,13 +22,23 @@ class NotesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $direction = Request::input('direction') ?? 'asc';
+        $sort = Request::input('sort') ?? 'id';
+        //dd($direction);
+        $notes = Auth::user()->notes()->with('category');
+        if ($sort && $direction) {
+            $notes = $notes->orderBy($sort, $direction);
+        }
 
-        $notes = Auth::user()->notes()->with('category')->paginate()->appends(Request::all());
+
+
+        $notes = $notes->paginate()->appends(Request::all());
         return Inertia::render(
             'Notes/Index',
             [
+                'request' => Request::all(),
                 'items' => new ResourceCollection($notes),
                 'categories' => new ResourceCollection(
                     Auth::user()->categories()
