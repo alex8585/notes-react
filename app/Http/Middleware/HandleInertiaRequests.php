@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -50,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                     'error' => $request->session()->get('error'),
                 ];
             },
+            'query' => FacadesRequest::all(),
         ]);
     }
 }

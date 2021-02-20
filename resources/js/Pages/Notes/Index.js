@@ -4,60 +4,87 @@ import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Shared/Layout';
 import Icon from '@/Shared/Icon';
 import Pagination from '@/Shared/Pagination';
-import SearchFilter from '@/Shared/SearchFilter';
+import Filter from './Filter';
 import SmallButton from "@/Shared/SmallButton";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import CreateModal from "./CreateModal";
 import EditModal from './EditModal';
 import ViewModal from './ViewModal';
 import { Inertia } from '@inertiajs/inertia';
+import { usePrevious } from 'react-use';
+import { getUrlQuery } from '@/utils';
 
 export default () => {
-  const {categories,  errors, items, request } = usePage().props;
+  const {categories, errors: oldErrors, items, query } = usePage().props;
   const { data, meta: { links } } = items;
-  const { sort, direction, page } = request;
-  
-  
+  const { sort, direction, page } = query;
 
-  const [sortObj, setSortObj] = useState({sort, direction, page});
+  
+  const [errors, setErrors] = useState(oldErrors);
+  
+  const [sortObj, setSortObj] = useState({sort, direction});
   const [itemId, setItemId] = useState(null);
   const [curentItem, setcurentItem] = useState(null);
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
   const [viewIsOpen, setViewIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
-
+  const [createIsOpen, setCreateIsOpen] = useState(false);
 
   useEffect(() => {
-    if(sortObj.direction ==  direction && sortObj.sort == sort) {
+    setErrors({...oldErrors});
+  },[oldErrors])
+
+
+  
+  //const prevValues = usePrevious(sortObj);
+  //console.log(prevValues);
+ 
+
+  
+  useEffect(() => {
+    if(sortObj.direction == direction && sortObj.sort == sort) {
         return;
     }
-    Inertia.get(route('notes'), sortObj);
+    let query = getUrlQuery();
+    Inertia.get(route(route().current()), {...query, ...sortObj}, {
+      replace: true,
+      preserveState: true
+    });
+   
   },[sortObj.direction, sortObj.sort])
 
+  function onCreateOpen ()  {
+    setErrors({});
+    setCreateIsOpen(true);
+  }
 
   let onViewOpen = (item) => {
+      setErrors({});
       setcurentItem(item);
       setViewIsOpen(true)
   }
 
   let onConfirmIsOpen = (id) => {
+      setErrors({});
       setItemId(id);
       setConfirmIsOpen(true);
   }
 
   function onEdit(item) {
+      setErrors({});
       setcurentItem(item);
       setEditIsOpen(true);
   }
-
+ 
   function sortHanle(e, sort) {
-    e.preventDefault;
+      e.preventDefault;
 
-    let newDirection = 'asc'
-    if(sortObj.direction == 'asc') {
-      newDirection = 'desc'
-    } 
-    setSortObj( oldState => ({...oldState, page, sort, direction:newDirection}) )
+      let newDirection = 'asc'
+      if(sortObj.direction == 'asc') {
+        newDirection = 'desc'
+      } 
+      setSortObj( oldState => ({...oldState, sort, "direction":newDirection}) )
   }
 
   return (
@@ -65,16 +92,24 @@ export default () => {
       <Helmet title="notes" />
       <div>
         <h1 className="mb-8 text-3xl font-bold">Notes</h1>
-        <div className="flex items-center justify-between mb-6">
-
-          <InertiaLink
+        <div className="mb-6">
+        
+            
+            <SmallButton className="btn-indigo focus:outline-none mb-5"
+                onClick={onCreateOpen} >
+                                
+                <span>Create</span>
+            </SmallButton>
+            <Filter />
+          {/* <InertiaLink
             className="btn-indigo focus:outline-none"
             href={route('notes.create')}
           >
             <span>Create</span>
             <span className="hidden md:inline"> Note</span>
-          </InertiaLink>
+          </InertiaLink> */}
         </div>
+        
         <div className="overflow-x-auto bg-white rounded shadow">
           <table className="w-full whitespace-nowrap">
             <thead>
@@ -150,6 +185,14 @@ export default () => {
         <Pagination links={links} />
       </div>
 
+      <CreateModal
+        setErrors={setErrors}
+        open={createIsOpen} 
+        setOpen={setCreateIsOpen}
+        errors={errors}
+        categories={categories}
+      />
+
       <ViewModal
         viewIsOpen={viewIsOpen} 
         setViewIsOpen={setViewIsOpen}
@@ -169,7 +212,7 @@ export default () => {
         itemId={itemId}
         setConfirmIsOpen={setConfirmIsOpen}
       />
-
+     
 
     </Layout>
   );

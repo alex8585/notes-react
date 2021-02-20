@@ -27,22 +27,19 @@ class NotesController extends Controller
         $direction = Request::input('direction') ?? 'asc';
         $sort = Request::input('sort') ?? 'id';
         //dd($direction);
-        $notes = Auth::user()->notes()->with('category');
+        $notes = Auth::user()->notes()->with('category')->filter(Request::only('search', 'category_id'));
         if ($sort && $direction) {
             $notes = $notes->orderBy($sort, $direction);
         }
-
-
 
         $notes = $notes->paginate()->appends(Request::all());
         return Inertia::render(
             'Notes/Index',
             [
-                'request' => Request::all(),
+                'filters' => Request::all('search', 'category_id'),
                 'items' => new ResourceCollection($notes),
                 'categories' => new ResourceCollection(
-                    Auth::user()->categories()
-                        ->get()
+                    Auth::user()->categories()->get()
                 ),
             ]
         );

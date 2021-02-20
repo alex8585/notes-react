@@ -53,6 +53,9 @@ export default () => {
 
   useEffect(() => {
     setVisible(true);
+    let timer = setTimeout( () => setVisible(false) , 3000)
+
+    return ( () =>  clearTimeout(timer)  );
   }, [flash, errors]);
 
   return (

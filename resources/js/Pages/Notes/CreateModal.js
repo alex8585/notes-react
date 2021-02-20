@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState } from 'react';
 import UiModal from '../../Shared/UiModal';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
@@ -7,16 +7,15 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Inertia } from '@inertiajs/inertia';
 
-export default function EditModal(props) {
-    const { editIsOpen, setEditIsOpen,  
-          errors, categories, curentItem} = props;
-
+export default function CreateModal(props) {
+    const { open, setOpen, errors, categories, setErrors} = props;
+    
     const [sending, setSending] = useState(false);
-    const [values, setValues] = useState(curentItem);
-
-    useEffect(()=> {
-        setValues(()=>({...curentItem}))
-    },[curentItem])
+    const [values, setValues] = useState({
+      title: '',
+      body:'',
+      category_id:'',
+    });
 
     function handleChange(e) {
         const key = e.target.name;
@@ -38,11 +37,17 @@ export default function EditModal(props) {
         e.preventDefault();
         setSending(true);
     
-        Inertia.put(route('notes.update', values.id), values, {
+        Inertia.post(route('notes.store'), values, {
             preserveState: true,
             onSuccess: (page) => {
                 setSending(false);
-                setEditIsOpen(false);
+                setOpen(false);
+                setValues({
+                  title: '',
+                  body:'',
+                  category_id:'',
+                })
+                setErrors({});
             },
             onError: (errors) => {
                 setSending(false);
@@ -50,13 +55,10 @@ export default function EditModal(props) {
         });
       }
 
-      if(!values) {
-          return null;
-      }
-
+      
     return (    
-        <UiModal title="Edit note" handleClose={ () => setEditIsOpen(false)} 
-                  open={editIsOpen}
+        <UiModal title="Create note" handleClose={ () => setOpen(false)} 
+                  open={open}
                   buttons={
                 <React.Fragment>
                     <div className="p-1">
@@ -91,7 +93,7 @@ export default function EditModal(props) {
                         label="Category"
                         name="category_id"
                         errors={errors.category_id}
-                        value={values.category_id ?? ''}
+                        value={values.category_id}
                         onChange={handleChange}
                       >
                         <option value=""></option>

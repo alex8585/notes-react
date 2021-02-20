@@ -7,6 +7,17 @@ export function filesize(size) {
   );
 }
 
+export function getUrlQuery(param = null) {
+  let url = new URL(window.location.href);
+  if(param) {
+    return url.searchParams.get(param)
+  }
+
+  let params = {};
+  url.searchParams.forEach( (v, k) =>  (params[k] = v) );
+  return params;
+}
+
 // Transforms key/value pairs to FormData() object
 export function toFormData(values = {}, method = 'POST') {
   const formData = new FormData();
