@@ -2,16 +2,45 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
+use App\Events\TestEvent;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Note extends Model
 {
     use HasFactory;
+    use Notifiable;
+
+    protected $dispatchesEvents = [
+        'saved' => TestEvent::class,
+        'deleted' => TestEvent::class,
+    ];
+
+    // protected $dates = [
+    //     'created_at',
+    //     'updated_at'
+    // ];
+
+
+    protected $casts = [
+        'created_at' => 'date:d-m-Y H:i',
+        'updated_at' => 'date:d-m-Y H:i',
+    ];
+
+
+
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+
+    // public function serializeDate(DateTimeInterface $date)
+    // {
+    //     //return $date;
+    //     return $date->format('d-Y-m');
+    // }
 
     public function scopeFilter($query, array $filters)
     {
@@ -28,5 +57,25 @@ class Note extends Model
                 $query->where('id', $category_id);
             });
         });
+    }
+
+    public function scopeSort($query, array $sortArr)
+    {
+
+        $direction = $sortArr['direction'] ?? 'asc';
+        $sort = $sortArr['sort'] ?? 'id';
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            return $query;
+        }
+
+        if ($sort !== 'category') {
+            $query->orderBy($sort, $direction);
+        } else {
+            $orderByRaw = \DB::raw("(select name from categories where notes.category_id = categories.id) $direction");
+            $query->orderByRaw($orderByRaw);
+        }
+
+        return $query;
     }
 }

@@ -16,6 +16,7 @@
     "facade/ignition": "^2.3.6",
     "fideloper/proxy": "^4.2",
     "fzaninotto/faker": "^1.9.1",
+    "guzzlehttp/guzzle": "^7.2",
     "inertiajs/inertia-laravel": "^0.3",
     "laravel/framework": "^8.0",
     "laravel/tinker": "^2.0",
@@ -76,5 +77,9 @@
     "optimize-autoloader": true
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "require-dev": {
+    "laravel/dusk": "^6.13",
+    "laravel/envoy": "^2.6"
+  }
 }

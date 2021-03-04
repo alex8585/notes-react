@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Note;
 use Inertia\Inertia;
+use App\Events\TestEvent;
+use App\Mail\OrderShipped;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
@@ -35,6 +41,12 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
+        //Mail::to('aaa@bbb.com')->send(new OrderShipped);
+        //$u = Note::find(1);
+        //TestEvent::dispatch($u);
+        //$value1 = Cache::get('key');
+        // dd($value1);
+
         return Inertia::render('Auth/Login');
     }
 }

@@ -76,11 +76,6 @@ Route::put('notes/{note}/restore')->name('notes.restore')->uses('NotesController
 
 
 
-
-
-
-
-
 // Reports
 Route::get('reports')->name('reports')->uses('ReportsController')->middleware('auth');
 

@@ -45,15 +45,18 @@ export default function EditModal(props) {
                 setEditIsOpen(false);
             },
             onError: (errors) => {
-                setSending(false);
-            }
+                setEditIsOpen(false);
+            },
+            onFinish: (e) => {
+              setSending(false);
+            },
         });
       }
 
       if(!values) {
           return null;
       }
-
+     
     return (    
         <UiModal title="Edit note" handleClose={ () => setEditIsOpen(false)} 
                   open={editIsOpen}

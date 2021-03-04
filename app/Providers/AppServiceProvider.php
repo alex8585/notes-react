@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use League\Glide\Server;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerGlide()
     {
+
         $this->app->bind(Server::class, function ($app) {
             return Server::create([
                 'source' => Storage::getDriver(),
@@ -30,6 +34,12 @@ class AppServiceProvider extends ServiceProvider
                 'base_url' => 'img',
             ]);
         });
-    }
 
+        DB::listen(function ($query) {
+            //Log::channel('app')->info($query->sql);
+            // $query->sql
+            // $query->bindings
+            // $query->time
+        });
+    }
 }

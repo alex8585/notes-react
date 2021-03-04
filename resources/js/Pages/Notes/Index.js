@@ -38,8 +38,8 @@ export default () => {
 
   
   //const prevValues = usePrevious(sortObj);
-  //console.log(prevValues);
- 
+  console.log(items);
+
 
   
   useEffect(() => {
@@ -51,7 +51,7 @@ export default () => {
       replace: true,
       preserveState: true
     });
-   
+
   },[sortObj.direction, sortObj.sort])
 
   function onCreateOpen ()  {
@@ -76,7 +76,7 @@ export default () => {
       setcurentItem(item);
       setEditIsOpen(true);
   }
- 
+
   function sortHanle(e, sort) {
       e.preventDefault;
 
@@ -121,7 +121,10 @@ export default () => {
                     <a className='cursor-pointer' onClick={(e)=>sortHanle(e, 'title')}> Title </a>
                 </th>
                 <th className="px-6 pt-5 pb-4">
-                    Category 
+                    <a className='cursor-pointer' onClick={(e)=>sortHanle(e, 'created_at')}> Create at </a>
+                </th>
+                <th className="px-6 pt-5 pb-4" >
+                <a className='cursor-pointer' onClick={(e)=>sortHanle(e, 'category')}>Category </a> 
                 </th>
                 <th className="px-6 pt-5 pb-4">
                     Actions 
@@ -130,7 +133,7 @@ export default () => {
             </thead>
             <tbody>
               { data.length > 0 && data.map( item  => {
-                    const { id, title, category } = item;
+                    const { id, title, category, created_at} = item;
                     return (
                         <tr key={id}
                           className="hover:bg-gray-100 focus-within:bg-gray-100" >
@@ -140,6 +143,9 @@ export default () => {
                             </td>
                             <td className="border-t items-center px-6 py-4">
                               {title}
+                            </td>
+                            <td className="border-t items-center px-6 py-4">
+                              {created_at}
                             </td>
                             <td className="border-t items-center px-6 py-4">
                               {(category && category.name) ?? ""}
@@ -212,7 +218,6 @@ export default () => {
         itemId={itemId}
         setConfirmIsOpen={setConfirmIsOpen}
       />
-     
 
     </Layout>
   );

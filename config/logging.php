@@ -35,6 +35,12 @@ return [
     */
 
     'channels' => [
+        'app' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/app.log'),
+            'ignore_exceptions' => false,
+            'level' => 'debug',
+        ],
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

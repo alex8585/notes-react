@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Note;
 use App\Models\User;
 use App\Models\Account;
 use App\Models\Contact;
+use App\Models\Category;
 use App\Models\Organization;
 use Illuminate\Database\Seeder;
 
@@ -26,15 +28,20 @@ class DatabaseSeeder extends Seeder
             'account_id' => $account->id
         ]);
 
-        $organizations = Organization::factory()->count(100)->create([
+        $organizations = Organization::factory()->count(30)->create([
             'account_id' => $account->id
         ]);
 
-        Contact::factory()->count(100)->create([
+        Contact::factory()->count(30)->create([
             'account_id' => $account->id
         ])
             ->each(function (Contact  $contact) use ($organizations) {
                 $contact->update(['organization_id' => $organizations->random()->id]);
             });
+
+
+        Category::factory()->count(3)
+            ->has(Note::factory()->count(15))
+            ->create();
     }
 }
