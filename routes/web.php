@@ -12,20 +12,18 @@
 */
 
 
-
-Auth::routes([
-    'login' => false,
-    'logout' => false,
-    'confirm' => true,
-    'forgot' => true,
-    'register' => true,
-    'reset' => true,
-    'verification' => true,
-]);
+require __DIR__ . '/auth.php';
+// Auth::routes([
+//     'login' => false,
+//     'logout' => false,
+//     'confirm' => true,
+//     'forgot' => true,
+//     'register' => true,
+//     'reset' => true,
+//     'verification' => true,
+// ]);
 // Auth
-Route::get('login')->name('login')->uses('Auth\LoginController@showLoginForm')->middleware('guest');
-Route::post('login')->name('login.attempt')->uses('Auth\LoginController@login')->middleware('guest');
-Route::post('logout')->name('logout')->uses('Auth\LoginController@logout');
+
 
 // Dashboard
 Route::get('/')->name('dashboard')->uses('DashboardController')->middleware('auth');
@@ -74,7 +72,7 @@ Route::put('categories/{category}/restore')->name('categories.restore')->uses('C
 
 
 // Notes
-Route::get('notes')->uses('NotesController@index')->name('notes')->middleware('remember', 'auth');
+Route::get('notes')->uses('NotesController@index')->name('notes')->middleware('remember', 'auth')->middleware('verified');
 Route::get('notes/create')->name('notes.create')->uses('NotesController@create')->middleware('auth');
 Route::post('notes')->name('notes.store')->uses('NotesController@store')->middleware('auth');
 Route::get('notes/{note}/edit')->name('notes.edit')->uses('NotesController@edit')->middleware('auth');

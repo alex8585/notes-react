@@ -22,8 +22,10 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
 use Intervention\Image\Facades\Image;
 use App\Http\Resources\NoteCollection;
 use App\Http\Requests\NoteStoreRequest;
@@ -49,6 +51,7 @@ class NotesController extends Controller
      */
     public function index(HttpRequest $request, Utils $utils, Server $glide)
     {
+
 
 
         //Auth::loginUsingId(7);

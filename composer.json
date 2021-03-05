@@ -13,11 +13,13 @@
     "ext-gd": "*",
     "barryvdh/laravel-debugbar": "^3.2",
     "beyondcode/laravel-dump-server": "^1.0",
+    "doctrine/dbal": "^3.0",
     "facade/ignition": "^2.3.6",
     "fideloper/proxy": "^4.2",
     "fzaninotto/faker": "^1.9.1",
     "guzzlehttp/guzzle": "^7.2",
     "inertiajs/inertia-laravel": "^0.3",
+    "laravel/fortify": "^1.7",
     "laravel/framework": "^8.0",
     "laravel/telescope": "^4.4",
     "laravel/tinker": "^2.0",
@@ -80,6 +82,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require-dev": {
+    "laravel/breeze": "^1.1",
     "laravel/dusk": "^6.13",
     "laravel/envoy": "^2.6",
     "laravel/sail": "^1.4"
