@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-Use Throwable;
+use Throwable;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\App;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -54,6 +54,11 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         $response = parent::render($request, $exception);
+
+        if (in_array($response->status(), [403])) {
+            return back()->with('error', $exception->getMessage());
+        }
+
 
         if (
             (App::environment('production'))

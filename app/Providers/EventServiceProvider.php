@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\TestEvent;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Log;
 use App\Listeners\TestEventListener;
+use App\Listeners\LogSuccessfulLogin;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use function Illuminate\Events\queueable;
@@ -28,7 +30,9 @@ class EventServiceProvider extends ServiceProvider
             TestEventListener::class,
             SendPodcastNotification::class,
         ],
-
+        Login::class => [
+            LogSuccessfulLogin::class,
+        ],
     ];
 
     // public function shouldDiscoverEvents()

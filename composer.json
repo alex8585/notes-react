@@ -19,6 +19,7 @@
     "guzzlehttp/guzzle": "^7.2",
     "inertiajs/inertia-laravel": "^0.3",
     "laravel/framework": "^8.0",
+    "laravel/telescope": "^4.4",
     "laravel/tinker": "^2.0",
     "laravel/ui": "^3.0",
     "league/glide": "2.0.x-dev",
@@ -47,7 +48,7 @@
   },
   "extra": {
     "laravel": {
-      "dont-discover": []
+      "dont-discover": [ "laravel/telescope"]
     }
   },
   "scripts": {
@@ -80,6 +81,7 @@
   "prefer-stable": true,
   "require-dev": {
     "laravel/dusk": "^6.13",
-    "laravel/envoy": "^2.6"
+    "laravel/envoy": "^2.6",
+    "laravel/sail": "^1.4"
   }
 }

@@ -21,6 +21,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
@@ -35,10 +36,12 @@ use App\Http\Requests\CategoryUpdateRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Request as Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 class NotesController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      *
@@ -48,7 +51,7 @@ class NotesController extends Controller
     {
 
 
-
+        //Auth::loginUsingId(7);
         // return $glide->fromPath('images/1.jpg',[])->response();
         //$carbon = Carbon::now()->diffForHumans();
 
@@ -157,11 +160,20 @@ class NotesController extends Controller
      */
     public function update(Note $note, NoteStoreRequest $request)
     {
+
+        //$this->authorize('update', $note);
+        //dd(Auth::user()->can('update', $note));
+
+        // $response = Gate::inspect('update', $note);
+        // if (!$response->allowed()) {
+        //     return back()->with('error', $response->message());
+        // }
+
         $note->update(
             $request->validated()
         );
 
-        return Redirect::route('notes')->with('success', 'The note has updated.');
+        return back()->with('success', 'The note has updated.');
     }
 
     /**

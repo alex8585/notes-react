@@ -10,8 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
@@ -46,7 +48,9 @@ class LoginController extends Controller
         //TestEvent::dispatch($u);
         //$value1 = Cache::get('key');
         // dd($value1);
-
+        // $user = Auth::find(1);
+        //dd(class_implements($user));
+        //event(new Registered($user));
         return Inertia::render('Auth/Login');
     }
 }

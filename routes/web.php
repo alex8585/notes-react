@@ -13,7 +13,15 @@
 
 
 
-
+Auth::routes([
+    'login' => false,
+    'logout' => false,
+    'confirm' => true,
+    'forgot' => true,
+    'register' => true,
+    'reset' => true,
+    'verification' => true,
+]);
 // Auth
 Route::get('login')->name('login')->uses('Auth\LoginController@showLoginForm')->middleware('guest');
 Route::post('login')->name('login.attempt')->uses('Auth\LoginController@login')->middleware('guest');
@@ -70,7 +78,10 @@ Route::get('notes')->uses('NotesController@index')->name('notes')->middleware('r
 Route::get('notes/create')->name('notes.create')->uses('NotesController@create')->middleware('auth');
 Route::post('notes')->name('notes.store')->uses('NotesController@store')->middleware('auth');
 Route::get('notes/{note}/edit')->name('notes.edit')->uses('NotesController@edit')->middleware('auth');
-Route::put('notes/{note}')->name('notes.update')->uses('NotesController@update')->middleware('auth', 'check-owner');
+
+Route::put('notes/{note}')->name('notes.update')->uses('NotesController@update')
+    ->middleware('auth', 'can:update,note');
+
 Route::delete('notes/{note}')->name('notes.destroy')->uses('NotesController@destroy')->middleware('auth', 'check-owner');
 Route::put('notes/{note}/restore')->name('notes.restore')->uses('NotesController@restore')->middleware('auth');
 

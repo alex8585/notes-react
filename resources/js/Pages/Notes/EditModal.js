@@ -45,9 +45,11 @@ export default function EditModal(props) {
                 setEditIsOpen(false);
             },
             onError: (errors) => {
+                //console.log(errors);
                 setEditIsOpen(false);
             },
             onFinish: (e) => {
+             // console.log(e);
               setSending(false);
             },
         });
