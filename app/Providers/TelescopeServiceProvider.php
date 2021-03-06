@@ -9,6 +9,7 @@ use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
+
     /**
      * Register any application services.
      *
@@ -16,7 +17,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     public function register()
     {
-        // Telescope::night();
+        //Telescope::night();
 
         $this->hideSensitiveRequestDetails();
 
@@ -26,10 +27,10 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             }
 
             return $entry->isReportableException() ||
-                   $entry->isFailedRequest() ||
-                   $entry->isFailedJob() ||
-                   $entry->isScheduledTask() ||
-                   $entry->hasMonitoredTag();
+                $entry->isFailedRequest() ||
+                $entry->isFailedJob() ||
+                $entry->isScheduledTask() ||
+                $entry->hasMonitoredTag();
         });
     }
 
@@ -64,7 +65,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     {
         Gate::define('viewTelescope', function ($user) {
             return in_array($user->email, [
-                //
+                'johndoe@example.com'
             ]);
         });
     }

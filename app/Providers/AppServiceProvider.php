@@ -21,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerGlide();
+
+        if ($this->app->environment('local')) {
+            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     protected function registerGlide()

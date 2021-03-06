@@ -55,7 +55,7 @@ class NotePolicy
      */
     public function update(User $user, Note $note)
     {
-        return 0 ? Response::allow()
+        return 1 ? Response::allow()
             : Response::deny('You do not own this note.');
     }
 

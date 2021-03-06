@@ -24,7 +24,7 @@ class ContactsController extends Controller
         return Inertia::render('Contacts/Index', [
             'filters' => Request::all('search', 'trashed'),
             'contacts' => new ContactCollection(
-                Auth::user()->account->contacts()
+                Auth::user()->contacts()
                     ->with('organization')
                     ->orderByName()
                     ->filter(Request::only('search', 'trashed'))
