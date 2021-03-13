@@ -59,11 +59,11 @@ class Note extends Model
         });
     }
 
-    public function scopeSort($query, array $sortArr)
+    public function scopeSort($query, $sort, $direction)
     {
 
-        $direction = $sortArr['direction'] ?? 'asc';
-        $sort = $sortArr['sort'] ?? 'id';
+        $direction = $direction ?? 'asc';
+        $sort = $sort ?? 'id';
 
         if (!in_array($direction, ['asc', 'desc'])) {
             return $query;

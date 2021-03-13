@@ -8,7 +8,7 @@ require __DIR__ . '/auth.php';
 Route::get('/img/{path}', 'ImagesController@show')->where('path', '.*');
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     // Dashboard
     Route::get('/')->name('dashboard')->uses('DashboardController');
 
@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
 
 
     // Notes
-    Route::get('notes')->uses('NotesController@index')->name('notes')->middleware('verified');
+    Route::get('notes')->uses('NotesController@index')->name('notes');
     Route::get('notes/create')->name('notes.create')->uses('NotesController@create');
     Route::post('notes')->name('notes.store')->uses('NotesController@store');
     Route::get('notes/{note}/edit')->name('notes.edit')->uses('NotesController@edit');

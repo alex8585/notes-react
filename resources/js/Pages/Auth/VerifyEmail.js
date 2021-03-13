@@ -4,6 +4,7 @@ import { InertiaLink, usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Shared/Layout';
 import Icon from '@/Shared/Icon';
 import Pagination from '@/Shared/Pagination';
+
 import SearchFilter from '@/Shared/SearchFilter';
 import SmallButton from "@/Shared/SmallButton";
 import { Inertia } from '@inertiajs/inertia';
@@ -11,7 +12,7 @@ import {useState} from 'react';
 import ConfirmModal from "@/Shared/Modals/ConfirmModal";
 import ModalWithButtons from '@/Shared/Modals/ModalWithButtons';
 import LoadingButton from '@/Shared/LoadingButton';
-
+import Timer from '@/Shared/Timer';
 
 export default () => {
     const [sending, setSending] = useState(false);
@@ -26,11 +27,14 @@ export default () => {
             }
         });
     }
+    function afterEnd() {
+        setSended(false);
+    }
 return (
 
     <Layout>
         <Helmet title="Categories" />
-
+        
         <div>
             <h1 className="mb-8 text-3xl font-bold">Please verify your email address</h1>
             <div className="mb-6">
@@ -39,7 +43,7 @@ return (
                 <div>could you verify your email address by clicking on the link we just emailed to you? </div>
                 <div>If you didn't receive the email, we will gladly send you another. </div>
             </div>
-           
+            
             <LoadingButton
                 isDisable={sended}
                 onClick={handleSubmit}
@@ -49,7 +53,11 @@ return (
             >
                 Resend Verification Email
             </LoadingButton> 
-            {sended ? 'Sended' : ''}
+            
+            
+            {sended ? 
+                <Timer className='font-bold mb-8 text-3xl'initialSeconds={10} afterEnd={afterEnd}/> : ''
+            }
             <div className="overflow-x-auto bg-white rounded shadow">
             
             </div>

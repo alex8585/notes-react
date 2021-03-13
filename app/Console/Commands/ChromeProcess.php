@@ -29,7 +29,7 @@ class test extends Command
      *
      * @var string
      */
-    protected $signature = 'test1';
+    protected $signature = 'ChromeProcess';
 
     /**
      * The console command description.

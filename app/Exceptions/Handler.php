@@ -55,6 +55,12 @@ class Handler extends ExceptionHandler
     {
         $response = parent::render($request, $exception);
 
+        if ($response->status() === 419) {
+            return back()->with([
+                'message' => 'The page expired, please try again.',
+            ]);
+        }
+
         if (in_array($response->status(), [403])) {
             return back()->with('error', $exception->getMessage());
         }
@@ -63,7 +69,7 @@ class Handler extends ExceptionHandler
         if (
             (App::environment('production'))
             && $request->header('X-Inertia')
-            && in_array($response->status(), [500, 503, 404, 403])
+            && in_array($response->status(), [500, 503, 404])
         ) {
             return Inertia::render('Error', ['status' => $response->status()])
                 ->toResponse($request)

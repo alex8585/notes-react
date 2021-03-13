@@ -34,7 +34,8 @@ export default () => {
       //   : { remember: 'forget' };
       Inertia.get(route(route().current()), {...query, ...values, "page":1}, {
         replace: true,
-        preserveState: true
+        preserveState: true,
+        only: ['items'],
       });
     }
   }, [values]);

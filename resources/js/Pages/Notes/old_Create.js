@@ -14,11 +14,13 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 export default () => {
   const {categories, errors } = usePage().props;
   const [sending, setSending] = useState(false);
-  const [values, setValues] = useState({
-    title: '',
-    body:'',
-    category_id:'',
-  });
+  // const [values, setValues] = useState({
+  //   title: '',
+  //   body:'',
+  //   category_id:'',
+  // });
+
+ 
 
   function handleChange(e) {
     const key = e.target.name;
@@ -47,7 +49,8 @@ export default () => {
     });
   }
 
-
+ 
+  
 
   
   return (

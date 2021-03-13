@@ -52,31 +52,13 @@ class NotesController extends Controller
     public function index(HttpRequest $request, Utils $utils, Server $glide)
     {
 
-
-
-        //Auth::loginUsingId(7);
-        // return $glide->fromPath('images/1.jpg',[])->response();
-        //$carbon = Carbon::now()->diffForHumans();
-
-        //$adjusted = Str::finish('this/string/', '/');
-        //$path = resource_path();
-
-
-        //dd( $path);
-        //$m = Auth::user()->categories()->get();
-
-        //dd((CategoryResource::collection($m))->resolve());
-        //Log::channel('app')->info('The system is down!');
-        //dd('1');
-
-
-        //dd(env('APP_ENV'));
+        $direction =  $request->direction ?? 'asc';
+        $sort = $request->sort ?? 'id';
 
         $notes = Auth::user()->notes()->with('category')
             ->filter(Request::only('search', 'category_id'))
-            ->sort(Request::only('sort', 'direction'))
+            ->sort($sort, $direction)
             ->paginate()->withQueryString();
-
 
 
         $notes->getCollection()->transform(function ($notes) {
@@ -86,14 +68,15 @@ class NotesController extends Controller
 
 
         //dd($notes);
-        return Inertia::render(
+        return inertia(
             'Notes/Index',
             [
                 'filters' => Request::all('search', 'category_id'),
+                'direction' => $direction,
                 'items' => (new NoteCollection($notes))->additional(['meta' => [
                     'test' => '1111',
                 ]]),
-                'categories' => new CategoryCollection(
+                'categories' => fn () =>  new CategoryCollection(
                     Auth::user()->categories()->get()
                 ),
             ]

@@ -1,28 +1,33 @@
-import React, {useState, useEffect,useMemo } from 'react';
+import React, {useState, useEffect,lazy,Suspense } from 'react';
 import Helmet from 'react-helmet';
-import { InertiaLink, usePage } from '@inertiajs/inertia-react';
+import {  usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Shared/Layout';
 import Icon from '@/Shared/Icon';
 import Pagination from '@/Shared/Pagination';
 import Filter from './Filter';
 import SmallButton from "@/Shared/SmallButton";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-import CreateModal from "./CreateModal";
-import EditModal from './EditModal';
+//import CreateModal from "./CreateModal";
+///import EditModal from './EditModal';
 import ViewModal from './ViewModal';
 import { Inertia } from '@inertiajs/inertia';
 import { usePrevious } from 'react-use';
 import { getUrlQuery } from '@/utils';
+import Test from "@s/Test";
+import withTest from "@/Hocs/withTest";
 
-export default () => {
-  const {categories, errors: oldErrors, items, query } = usePage().props;
+const EditModal = lazy(() => import('./EditModal'));
+const CreateModal = lazy(() => import('./CreateModal'));
+
+function NotesIndex()  {
+  const {categories, errors: oldErrors, items, direction: sDdirection } = usePage().props;
   const { data, meta: { links } } = items;
-  const { sort, direction, page } = query;
 
-  
   const [errors, setErrors] = useState(oldErrors);
-  
-  const [sortObj, setSortObj] = useState({sort, direction});
+
+  const [sort, setSort] = useState('id');
+  const [direction, setDirection] = useState(sDdirection);
+
   const [itemId, setItemId] = useState(null);
   const [curentItem, setcurentItem] = useState(null);
 
@@ -36,23 +41,20 @@ export default () => {
   },[oldErrors])
 
 
-  
-  //const prevValues = usePrevious(sortObj);
-  console.log(items);
+  const prevDirection = usePrevious(direction);
 
-
-  
   useEffect(() => {
-    if(sortObj.direction == direction && sortObj.sort == sort) {
-        return;
-    }
+    if(!prevDirection) {return}
+    console.log('567');
     let query = getUrlQuery();
-    Inertia.get(route(route().current()), {...query, ...sortObj}, {
-      replace: true,
-      preserveState: true
+      Inertia.get(route(route().current()), {...query, direction, sort}, {
+        //preserveScroll: true,
+        replace: true,
+        preserveState: true,
+        only: ['items'],
     });
 
-  },[sortObj.direction, sortObj.sort])
+  },[direction, sort])
 
   function onCreateOpen ()  {
     setErrors({});
@@ -78,13 +80,14 @@ export default () => {
   }
 
   function sortHanle(e, sort) {
-      e.preventDefault;
 
-      let newDirection = 'asc'
-      if(sortObj.direction == 'asc') {
-        newDirection = 'desc'
-      } 
-      setSortObj( oldState => ({...oldState, sort, "direction":newDirection}) )
+      e.preventDefault;
+      setSort(sort);
+      if(!direction || direction == 'asc') {
+        setDirection('desc')
+      } else {
+        setDirection('asc')
+      }
   }
 
   return (
@@ -109,7 +112,7 @@ export default () => {
             <span className="hidden md:inline"> Note</span>
           </InertiaLink> */}
         </div>
-        
+        <Test/>
         <div className="overflow-x-auto bg-white rounded shadow">
           <table className="w-full whitespace-nowrap">
             <thead>
@@ -190,14 +193,24 @@ export default () => {
         </div>
         <Pagination links={links} />
       </div>
-
-      <CreateModal
-        setErrors={setErrors}
-        open={createIsOpen} 
-        setOpen={setCreateIsOpen}
-        errors={errors}
-        categories={categories}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CreateModal 
+          setErrors={setErrors}
+          open={createIsOpen} 
+          setOpen={setCreateIsOpen}
+          errors={errors}
+          categories={categories}
+        />
+        
+        <EditModal 
+          editIsOpen={editIsOpen} 
+          errors={errors}
+          categories={categories}
+          setEditIsOpen={setEditIsOpen}
+          curentItem={curentItem}
+        />
+      </Suspense>
+     
 
       <ViewModal
         viewIsOpen={viewIsOpen} 
@@ -205,20 +218,17 @@ export default () => {
         curentItem={curentItem}
       />
 
-      <EditModal
-        editIsOpen={editIsOpen} 
-        errors={errors}
-        categories={categories}
-        setEditIsOpen={setEditIsOpen}
-        curentItem={curentItem}
-      />
+     
 
       <DeleteConfirmModal 
         open={confirmIsOpen}
         itemId={itemId}
         setConfirmIsOpen={setConfirmIsOpen}
       />
-
+      
     </Layout>
   );
 };
+
+
+export default withTest(NotesIndex);

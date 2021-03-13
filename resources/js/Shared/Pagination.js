@@ -17,7 +17,7 @@ const PageLink = ({ active, label, url }) => {
     }
   );
   return (
-    <InertiaLink className={className} href={url}>
+    <InertiaLink preserveState className={className} href={url}>
       <span dangerouslySetInnerHTML={{ __html: label }}></span>
     </InertiaLink>
   );

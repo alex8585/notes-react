@@ -7,5 +7,7 @@
 @import 'components/form';
 @import 'components/common';
 
+
+@import './nprogress.min.css';
 /* Utilities */
 @import 'tailwindcss/utilities';

@@ -1,4 +1,4 @@
-import React, {useState } from 'react';
+import React, {useState,  Suspense, lazy } from 'react';
 import UiModal from '../../Shared/UiModal';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
@@ -6,16 +6,35 @@ import SelectInput from '@/Shared/SelectInput';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Inertia } from '@inertiajs/inertia';
+import { useRemember } from '@inertiajs/inertia-react';
 
+
+//const ClassicEditor = lazy(() => import('@ckeditor/ckeditor5-react'));
+//const CKEditor = lazy(() => import('@ckeditor/ckeditor5-build-classic'));
+
+
+
+//CreateModal.displayName = `ttttt`;
 export default function CreateModal(props) {
+   
+
     const { open, setOpen, errors, categories, setErrors} = props;
     
     const [sending, setSending] = useState(false);
+
     const [values, setValues] = useState({
       title: '',
       body:'',
       category_id:'',
     });
+
+    // const [values, setValues] = useRemember({
+    //   title: '',
+    //   body:'',
+    //   category_id:'',
+    // },'NoteCreate')
+
+    // console.log(values);
 
     function handleChange(e) {
         const key = e.target.name;
@@ -50,12 +69,13 @@ export default function CreateModal(props) {
                 setErrors({});
             },
             onError: (errors) => {
+                console.log(errors);
                 setSending(false);
             }
         });
       }
 
-      
+     
     return (    
         <UiModal title="Create note" handleClose={ () => setOpen(false)} 
                   open={open}
@@ -103,15 +123,16 @@ export default function CreateModal(props) {
                           </option>
                         ))}
                       </SelectInput>
-                      <div className="w-full pb-8 pr-6 ">
-                        <CKEditor 
-                            editor={ ClassicEditor }
-                            data={values.body}
-                            onChange={ (event, editor) => handleChangEditor( event, editor ) }
-                        />
-                        {errors.body && <div className="form-error">{errors.body}</div>}
-                      </div>
-
+                      <Suspense fallback={<div>Loading...</div>}>
+                        <div className="w-full pb-8 pr-6 ">
+                          <CKEditor 
+                              editor={ ClassicEditor }
+                              data={values.body}
+                              onChange={ (event, editor) => handleChangEditor( event, editor ) }
+                          />
+                          {errors.body && <div className="form-error">{errors.body}</div>}
+                        </div>
+                      </Suspense>
                   </div>
 
                 </form>
