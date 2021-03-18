@@ -1,44 +1,44 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState,useEffect } from 'react';
 import UiModal from '../../Shared/UiModal';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
 import SelectInput from '@/Shared/SelectInput';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Inertia } from '@inertiajs/inertia';
+import EditorInput from '@/Shared/EditorInput';
 
-export default function EditModal(props) {
-    const { editIsOpen, setEditIsOpen,  
-          errors, categories, curentItem} = props;
+import { Inertia } from '@inertiajs/inertia';
+import useEditor from "@h/useEditor";
+import useFormValues from "@h/useFormValues";
+
+function EditModal(props) {
+    
+    const {  editIsOpen, setEditIsOpen, curentItem,
+          errors, categories } = props;
+
+    const [body, handleChangEditor, resetEditor, setCurrentEditor] = useEditor('');
+    const [values, handleChange, resetValues, setCurrentValues] = useFormValues({});
+    
+
 
     const [sending, setSending] = useState(false);
-    const [values, setValues] = useState(curentItem);
 
     useEffect(()=> {
-        setValues(()=>({...curentItem}))
+        if(curentItem) {
+          setCurrentEditor(curentItem.body);
+          setCurrentValues({
+            title:curentItem.title,
+            category_id:curentItem.category_id,
+          })
+        }
     },[curentItem])
-
-    function handleChange(e) {
-        const key = e.target.name;
-        const value = e.target.value;
-        setValues(values => ({
-            ...values,
-            [key]: value
-        }));
-    }
-    function handleChangEditor(event, editor) {
-        const data = editor.getData();
-        setValues(values => ({
-            ...values,
-            'body': data
-        }));
-    }
 
     function editHandleSubmit(e) {
         e.preventDefault();
         setSending(true);
-    
-        Inertia.put(route('notes.update', values.id), values, {
+        let sendData = {
+          ...values,
+          body
+        }
+        Inertia.put(route('notes.update', curentItem.id), sendData, {
             preserveState: true,
             onSuccess: (page) => {
                 setSending(false);
@@ -58,7 +58,7 @@ export default function EditModal(props) {
       if(!values) {
           return null;
       }
-     
+      
     return (    
         <UiModal title="Edit note" handleClose={ () => setEditIsOpen(false)} 
                   open={editIsOpen}
@@ -75,10 +75,8 @@ export default function EditModal(props) {
                     </LoadingButton>
                     </div>
                 </React.Fragment>
-            }
-          
-          
-          >
+            }>
+
             <div className="bg-white rounded shadow overflow-hidden max-w-3xl">
                 <form>
                   <div className="flex flex-wrap p-8 -mb-8 -mr-6">
@@ -106,15 +104,12 @@ export default function EditModal(props) {
                           </option>
                         ))}
                       </SelectInput>
-                      <div className="w-full pb-8 pr-6 ">
-                        <CKEditor 
-                            editor={ ClassicEditor }
-                            data={values.body}
-                            onChange={ (event, editor) => handleChangEditor( event, editor ) }
-                        />
-                        {errors.body && <div className="form-error">{errors.body}</div>}
-                      </div>
-
+                      <EditorInput
+                          label="Text"
+                          value={body}
+                          onChange={ (event, editor) => handleChangEditor( event, editor ) }
+                          errors={errors.body}
+                      />
                   </div>
 
                 </form>
@@ -122,3 +117,5 @@ export default function EditModal(props) {
         </UiModal>  
         );
 }
+
+export default EditModal;

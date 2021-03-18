@@ -26,7 +26,7 @@ class NoteStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_id' => ['nullable', Rule::exists('categories', 'id')->where(function ($query) {
+            'category_id' => ['required', Rule::exists('categories', 'id')->where(function ($query) {
                 $query->where('user_id', Auth::user()->id);
             })],
             'title' => ['required', 'max:50'],

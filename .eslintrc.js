@@ -7,7 +7,12 @@ module.exports = {
       jsx: true
     }
   },
+  "plugins": [
+    "react-hooks"
+  ],
   rules: {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     'no-console': 'off',
     'no-undef': 'off',
     'react/display-name': false,

@@ -24,7 +24,8 @@ mix
     resolve: {
       alias: {
         '@': path.resolve('resources/js'),
-        '@s': path.resolve('resources/js/Shared')
+        '@s': path.resolve('resources/js/Shared'),
+        '@h': path.resolve('resources/js/Hooks')
       }
     }
   })

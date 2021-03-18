@@ -51,7 +51,7 @@ class NotesController extends Controller
      */
     public function index(HttpRequest $request, Utils $utils, Server $glide)
     {
-
+       
         $direction =  $request->direction ?? 'asc';
         $sort = $request->sort ?? 'id';
 
@@ -110,7 +110,8 @@ class NotesController extends Controller
             $request->validated()
         );
 
-        return Redirect::route('notes')->with('success', 'The note has created.');
+        return Redirect::route('notes')
+            ->with('success', 'The note has created.');
     }
 
     /**

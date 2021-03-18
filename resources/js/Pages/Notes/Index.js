@@ -7,14 +7,13 @@ import Pagination from '@/Shared/Pagination';
 import Filter from './Filter';
 import SmallButton from "@/Shared/SmallButton";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-//import CreateModal from "./CreateModal";
-///import EditModal from './EditModal';
+
 import ViewModal from './ViewModal';
 import { Inertia } from '@inertiajs/inertia';
 import { usePrevious } from 'react-use';
 import { getUrlQuery } from '@/utils';
 import Test from "@s/Test";
-import withTest from "@/Hocs/withTest";
+
 
 const EditModal = lazy(() => import('./EditModal'));
 const CreateModal = lazy(() => import('./CreateModal'));
@@ -51,7 +50,7 @@ function NotesIndex()  {
         //preserveScroll: true,
         replace: true,
         preserveState: true,
-        only: ['items'],
+        only: ['items','flash'],
     });
 
   },[direction, sort])
@@ -91,8 +90,9 @@ function NotesIndex()  {
   }
 
   return (
+    
     <Layout>
-      <Helmet title="notes" />
+      <Helmet title="notes" /> 
       <div>
         <h1 className="mb-8 text-3xl font-bold">Notes</h1>
         <div className="mb-6">
@@ -112,7 +112,7 @@ function NotesIndex()  {
             <span className="hidden md:inline"> Note</span>
           </InertiaLink> */}
         </div>
-        <Test/>
+        {/* <Test/> */}
         <div className="overflow-x-auto bg-white rounded shadow">
           <table className="w-full whitespace-nowrap">
             <thead>
@@ -210,7 +210,7 @@ function NotesIndex()  {
           curentItem={curentItem}
         />
       </Suspense>
-     
+      
 
       <ViewModal
         viewIsOpen={viewIsOpen} 
@@ -218,7 +218,7 @@ function NotesIndex()  {
         curentItem={curentItem}
       />
 
-     
+      
 
       <DeleteConfirmModal 
         open={confirmIsOpen}
@@ -231,4 +231,10 @@ function NotesIndex()  {
 };
 
 
-export default withTest(NotesIndex);
+//export default NotesIndex;
+export default React.memo(NotesIndex, (props, nextProps) => {
+  return false;
+  if(props.prop1 === nextProps.prop1) {
+    
+  }
+})

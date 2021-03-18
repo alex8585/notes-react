@@ -48,12 +48,17 @@ const ButtonClose = ({ color, onClick }) => {
 
 export default () => {
   const [visible, setVisible] = useState(true);
-  const { flash, errors } = usePage().props;
+  let { flash, errors } = usePage().props;
   const numOfErrors = Object.keys(errors).length;
+
+
+
 
   useEffect(() => {
     setVisible(true);
-    let timer = setTimeout( () => setVisible(false) , 3000)
+    let timer = setTimeout( () => {
+      setVisible(false);
+    } , 3000)
 
     return ( () =>  clearTimeout(timer)  );
   }, [flash, errors]);

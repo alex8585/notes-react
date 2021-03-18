@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import ThemeContext from '@/Context/ThemeContext';
-import withTest from "@/Hocs/withTest";
+
 
 
 
@@ -13,4 +13,4 @@ function Test({ className }) {
         </header>
     );
 };
-export default  withTest(Test);
+export default  Test;

@@ -3,69 +3,43 @@ import UiModal from '../../Shared/UiModal';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
 import SelectInput from '@/Shared/SelectInput';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import EditorInput from '@/Shared/EditorInput';
+
 import { Inertia } from '@inertiajs/inertia';
-import { useRemember } from '@inertiajs/inertia-react';
+import useEditor from "@h/useEditor";
+import useFormValues from "@h/useFormValues";
 
+function CreateModal(props) {
 
-//const ClassicEditor = lazy(() => import('@ckeditor/ckeditor5-react'));
-//const CKEditor = lazy(() => import('@ckeditor/ckeditor5-build-classic'));
-
-
-
-//CreateModal.displayName = `ttttt`;
-export default function CreateModal(props) {
-   
-
-    const { open, setOpen, errors, categories, setErrors} = props;
+    const {open, setOpen, errors, categories, setErrors} = props;
     
     const [sending, setSending] = useState(false);
 
-    const [values, setValues] = useState({
+    
+    const initialState = {
       title: '',
-      body:'',
       category_id:'',
-    });
-
-    // const [values, setValues] = useRemember({
-    //   title: '',
-    //   body:'',
-    //   category_id:'',
-    // },'NoteCreate')
-
-    // console.log(values);
-
-    function handleChange(e) {
-        const key = e.target.name;
-        const value = e.target.value;
-        setValues(values => ({
-            ...values,
-            [key]: value
-        }));
     }
-    function handleChangEditor(event, editor) {
-        const data = editor.getData();
-        setValues(values => ({
-            ...values,
-            'body': data
-        }));
-    }
+
+    const [values, handleChange, resetFormValues] = useFormValues(initialState)
+    const [body, handleChangEditor, resetEditor] = useEditor('');
+
+    
 
     function editHandleSubmit(e) {
         e.preventDefault();
         setSending(true);
-    
-        Inertia.post(route('notes.store'), values, {
+        let sendData = {
+          ...values,
+          body
+        }
+        Inertia.post(route('notes.store'), sendData, {
             preserveState: true,
             onSuccess: (page) => {
                 setSending(false);
                 setOpen(false);
-                setValues({
-                  title: '',
-                  body:'',
-                  category_id:'',
-                })
+                resetEditor();
+                resetFormValues();
                 setErrors({});
             },
             onError: (errors) => {
@@ -75,7 +49,7 @@ export default function CreateModal(props) {
         });
       }
 
-     
+    
     return (    
         <UiModal title="Create note" handleClose={ () => setOpen(false)} 
                   open={open}
@@ -92,10 +66,8 @@ export default function CreateModal(props) {
                     </LoadingButton>
                     </div>
                 </React.Fragment>
-            }
-          
-          
-          >
+            }>
+
             <div className="bg-white rounded shadow overflow-hidden max-w-3xl">
                 <form>
                   <div className="flex flex-wrap p-8 -mb-8 -mr-6">
@@ -123,16 +95,14 @@ export default function CreateModal(props) {
                           </option>
                         ))}
                       </SelectInput>
-                      <Suspense fallback={<div>Loading...</div>}>
-                        <div className="w-full pb-8 pr-6 ">
-                          <CKEditor 
-                              editor={ ClassicEditor }
-                              data={values.body}
-                              onChange={ (event, editor) => handleChangEditor( event, editor ) }
-                          />
-                          {errors.body && <div className="form-error">{errors.body}</div>}
-                        </div>
-                      </Suspense>
+                      <EditorInput
+                          name='body'
+                          className="w-full pb-8 pr-6"
+                          label="Text:"
+                          value={body}
+                          onChange={ (event, editor) => handleChangEditor( event, editor ) }
+                          errors={errors.body}
+                      />
                   </div>
 
                 </form>
@@ -140,3 +110,6 @@ export default function CreateModal(props) {
         </UiModal>  
         );
 }
+
+
+export default CreateModal;
