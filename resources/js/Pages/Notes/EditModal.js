@@ -1,45 +1,41 @@
-import React, {useState,useEffect } from 'react';
+import React, {useState } from 'react';
 import UiModal from '../../Shared/UiModal';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
 import SelectInput from '@/Shared/SelectInput';
 import EditorInput from '@/Shared/EditorInput';
-
 import { Inertia } from '@inertiajs/inertia';
-import useEditor from "@h/useEditor";
-import useFormValues from "@h/useFormValues";
 import {connect} from 'react-redux';
 import { compose } from 'redux';
-function EditModal(props) {
-    
-    const {  editIsOpen, setEditIsOpen, currentItem,
-          errors, categories } = props;
-
-    const [body, handleChangEditor, resetEditor, setCurrentEditor] = useEditor('');
-    const [values, handleChange, resetValues, setCurrentValues] = useFormValues({});
-    
+import {setCurrentItem} from './Redux/actions';
 
 
+function EditModal({setCurrentItem,  editIsOpen, setEditIsOpen, currentItem, errors, categories }) {
+  
     const [sending, setSending] = useState(false);
-    
-    useEffect(()=> {
-        if(currentItem) {
-          setCurrentEditor(currentItem.body);
-          setCurrentValues({
-            title:currentItem.title,
-            category_id:currentItem.category_id,
-          })
-        }
-    },[currentItem])
 
+    function handleChange(e) {
+      const key = e.target.name;
+      const value = e.target.value;
+      setCurrentItem({
+          ...currentItem,
+          [key]: value
+      })
+    }
+
+    function handleChangEditor(event, editor) {
+      const data = editor.getData();
+      setCurrentItem({
+          ...currentItem,
+          body: data
+      })
+    }
+    
     function editHandleSubmit(e) {
         e.preventDefault();
         setSending(true);
-        let sendData = {
-          ...values,
-          body
-        }
-        Inertia.put(route('notes.update', currentItem.id), sendData, {
+
+        Inertia.put(route('notes.update', currentItem.id), currentItem, {
             preserveState: true,
             onSuccess: (page) => {
                 setSending(false);
@@ -47,19 +43,15 @@ function EditModal(props) {
             },
             onError: (errors) => {
                 //console.log(errors);
-                setEditIsOpen(false);
+                //setEditIsOpen(false);
             },
             onFinish: (e) => {
              // console.log(e);
               setSending(false);
             },
         });
-      }
+    }
 
-      if(!values) {
-          return null;
-      }
-      
     return (    
         <UiModal title="Edit note" handleClose={ () => setEditIsOpen(false)} 
                   open={editIsOpen}
@@ -86,7 +78,7 @@ function EditModal(props) {
                         label="Note title"
                         name="title"
                         errors={errors.title}
-                        value={values.title}
+                        value={currentItem.title}
                         onChange={handleChange}
                       />
 
@@ -95,7 +87,7 @@ function EditModal(props) {
                         label="Category"
                         name="category_id"
                         errors={errors.category_id}
-                        value={values.category_id ?? ''}
+                        value={currentItem.category_id ?? ''}
                         onChange={handleChange}
                       >
                         <option value=""></option>
@@ -107,7 +99,7 @@ function EditModal(props) {
                       </SelectInput>
                       <EditorInput
                           label="Text"
-                          value={body}
+                          value={currentItem.body}
                           onChange={ (event, editor) => handleChangEditor( event, editor ) }
                           errors={errors.body}
                       />
@@ -124,10 +116,18 @@ const mapStateToProps = (state) => {
       currentItem: state.notes.currentItem,
     }
 }
+
+const actions = {
+  setCurrentItem
+}
+
+
 const withConnect = connect(
   mapStateToProps,
-  
+  actions
 );
+
+
 
 export default compose(
   withConnect,

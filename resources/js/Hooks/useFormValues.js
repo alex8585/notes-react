@@ -1,13 +1,7 @@
-import { useState,useEffect } from 'react';
+import { useState } from 'react';
 
 export default function useFormValues(initialState) {  
     const [values, setValues] = useState(initialState);
-
-    // useEffect(()=> {
-    //     if(curentItem) {
-    //         setValues(()=>({...curentItem}))
-    //     }
-    // },[curentItem])
 
     function handleChange(e) {
         const key = e.target.name;
@@ -18,12 +12,12 @@ export default function useFormValues(initialState) {
         }));
     }
 
-    function setCurrent(newWalues) {
-        setValues(values => ({
-            ...values,
-            ...newWalues
-        }));
-    }
+    // function setCurrent(newWalues) {
+    //     setValues(values => ({
+    //         ...values,
+    //         ...newWalues
+    //     }));
+    // }
 
     function resetFormValues() {
         setValues(values => ({
@@ -31,5 +25,5 @@ export default function useFormValues(initialState) {
         }));
     }
 
-    return [values, handleChange, resetFormValues, setCurrent];
+    return [values, handleChange, resetFormValues];
 }

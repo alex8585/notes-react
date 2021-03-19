@@ -10,7 +10,7 @@ import {compose, createStore, applyMiddleware} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import {sagaWatcher} from './Redux/sagas';
+//import {sagaWatcher} from './Redux/sagas';
 import rootReducer from './rootReducer';
 
 let timeout = null
@@ -66,7 +66,7 @@ const store = createStore(
     )
 );
 
-saga.run(sagaWatcher);
+//saga.run(sagaWatcher);
 
 const appNode = document.getElementById('app');
 

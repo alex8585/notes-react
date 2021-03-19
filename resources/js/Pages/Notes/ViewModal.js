@@ -1,14 +1,10 @@
 import React from 'react';
 import UiModal from '../../Shared/UiModal';
 import parse from 'html-react-parser';
+import {connect} from 'react-redux';
+import { compose } from 'redux';
 
-export default function ViewModal(props) {
-    const { viewIsOpen, setViewIsOpen, curentItem } = props;
-
-    
-    if(!curentItem) {
-        return null;
-    }
+function ViewModal({ viewIsOpen, setViewIsOpen, currentItem }) {
 
     return (    
         <UiModal title="Note details" 
@@ -19,28 +15,39 @@ export default function ViewModal(props) {
             <div className="bg-white rounded shadow overflow-hidden max-w-3xl">
                 <div className='my-4'>
                   <span>id: </span>
-                  <span> {curentItem ?  curentItem.id :''}</span>
+                  <span> {currentItem ?  currentItem.id :''}</span>
                 </div>
                 
                 <div className='my-4'>
                   <span>Note title: </span>
-                  <span> {curentItem ? curentItem.title :''}</span>
+                  <span> {currentItem ? currentItem.title :''}</span>
                 </div>
                 
                 <div className='my-4'>
                   <span>Note category: </span>
-                  <span> {(curentItem && curentItem.category) ? curentItem.category.name :''}</span>
+                  <span> {(currentItem && currentItem.category) ? currentItem.category.name :''}</span>
                 </div>
 
                 <div className='my-4'>
                   <span>Note text: </span>
-                  <span> {(curentItem && curentItem.body) ? parse(curentItem.body) : ''}</span>
+                  <span> {(currentItem && currentItem.body) ? parse(currentItem.body) : ''}</span>
                 </div>
-
-                
-
             </div>
-            
         </UiModal>  
         );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    currentItem: state.notes.currentItem,
+  }
+}
+
+const withConnect = connect(
+    mapStateToProps,
+);
+
+
+export default compose(
+    withConnect,
+)(ViewModal);
