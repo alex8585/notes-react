@@ -8,10 +8,11 @@ import EditorInput from '@/Shared/EditorInput';
 import { Inertia } from '@inertiajs/inertia';
 import useEditor from "@h/useEditor";
 import useFormValues from "@h/useFormValues";
-
+import {connect} from 'react-redux';
+import { compose } from 'redux';
 function EditModal(props) {
     
-    const {  editIsOpen, setEditIsOpen, curentItem,
+    const {  editIsOpen, setEditIsOpen, currentItem,
           errors, categories } = props;
 
     const [body, handleChangEditor, resetEditor, setCurrentEditor] = useEditor('');
@@ -20,16 +21,16 @@ function EditModal(props) {
 
 
     const [sending, setSending] = useState(false);
-
+    
     useEffect(()=> {
-        if(curentItem) {
-          setCurrentEditor(curentItem.body);
+        if(currentItem) {
+          setCurrentEditor(currentItem.body);
           setCurrentValues({
-            title:curentItem.title,
-            category_id:curentItem.category_id,
+            title:currentItem.title,
+            category_id:currentItem.category_id,
           })
         }
-    },[curentItem])
+    },[currentItem])
 
     function editHandleSubmit(e) {
         e.preventDefault();
@@ -38,7 +39,7 @@ function EditModal(props) {
           ...values,
           body
         }
-        Inertia.put(route('notes.update', curentItem.id), sendData, {
+        Inertia.put(route('notes.update', currentItem.id), sendData, {
             preserveState: true,
             onSuccess: (page) => {
                 setSending(false);
@@ -118,4 +119,16 @@ function EditModal(props) {
         );
 }
 
-export default EditModal;
+const mapStateToProps = (state) => {
+    return {
+      currentItem: state.notes.currentItem,
+    }
+}
+const withConnect = connect(
+  mapStateToProps,
+  
+);
+
+export default compose(
+  withConnect,
+)(EditModal);

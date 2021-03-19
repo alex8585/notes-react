@@ -1,4 +1,4 @@
-import React, {useState, useEffect,lazy,Suspense } from 'react';
+import React, {useState, useEffect,lazy,Suspense,memo } from 'react';
 import Helmet from 'react-helmet';
 import {  usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Shared/Layout';
@@ -7,18 +7,19 @@ import Pagination from '@/Shared/Pagination';
 import Filter from './Filter';
 import SmallButton from "@/Shared/SmallButton";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-
+import {connect} from 'react-redux';
+import { compose } from 'redux';
 import ViewModal from './ViewModal';
 import { Inertia } from '@inertiajs/inertia';
 import { usePrevious } from 'react-use';
 import { getUrlQuery } from '@/utils';
 import Test from "@s/Test";
-
+import {setCurrentItem} from './Redux/actions';
 
 const EditModal = lazy(() => import('./EditModal'));
 const CreateModal = lazy(() => import('./CreateModal'));
 
-function NotesIndex()  {
+function NotesIndex({currentItem, setCurrentItem})  {
   const {categories, errors: oldErrors, items, direction: sDdirection } = usePage().props;
   const { data, meta: { links } } = items;
 
@@ -28,13 +29,14 @@ function NotesIndex()  {
   const [direction, setDirection] = useState(sDdirection);
 
   const [itemId, setItemId] = useState(null);
-  const [curentItem, setcurentItem] = useState(null);
+  //const [currentItem, setcurrentItem] = useState(null);
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
   const [viewIsOpen, setViewIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [createIsOpen, setCreateIsOpen] = useState(false);
 
+  
   useEffect(() => {
     setErrors({...oldErrors});
   },[oldErrors])
@@ -62,7 +64,7 @@ function NotesIndex()  {
 
   let onViewOpen = (item) => {
       setErrors({});
-      setcurentItem(item);
+      setCurrentItem(item);
       setViewIsOpen(true)
   }
 
@@ -74,7 +76,7 @@ function NotesIndex()  {
 
   function onEdit(item) {
       setErrors({});
-      setcurentItem(item);
+      setCurrentItem(item);
       setEditIsOpen(true);
   }
 
@@ -193,6 +195,7 @@ function NotesIndex()  {
         </div>
         <Pagination links={links} />
       </div>
+
       <Suspense fallback={<div>Loading...</div>}>
         <CreateModal 
           setErrors={setErrors}
@@ -207,7 +210,7 @@ function NotesIndex()  {
           errors={errors}
           categories={categories}
           setEditIsOpen={setEditIsOpen}
-          curentItem={curentItem}
+          //currentItem={currentItem}
         />
       </Suspense>
       
@@ -215,7 +218,7 @@ function NotesIndex()  {
       <ViewModal
         viewIsOpen={viewIsOpen} 
         setViewIsOpen={setViewIsOpen}
-        curentItem={curentItem}
+        //currentItem={currentItem}
       />
 
       
@@ -231,10 +234,25 @@ function NotesIndex()  {
 };
 
 
-//export default NotesIndex;
-export default React.memo(NotesIndex, (props, nextProps) => {
-  return false;
-  if(props.prop1 === nextProps.prop1) {
-    
-  }
-})
+
+const mapStateToProps = (state) => {
+    return {
+      currentItem: state.notes.currentItem,
+    }
+}
+
+const actions = {
+  setCurrentItem
+}
+
+const withConnect = connect( mapStateToProps, actions );
+
+export default compose( withConnect, memo )(NotesIndex);
+
+
+
+
+
+
+
+
