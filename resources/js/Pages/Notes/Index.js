@@ -1,4 +1,4 @@
-import React, {useState, useEffect,lazy,Suspense,memo } from 'react';
+import React, {useState, useEffect,useContext,lazy,Suspense,memo } from 'react';
 import Helmet from 'react-helmet';
 import {  usePage } from '@inertiajs/inertia-react';
 import Layout from '@/Shared/Layout';
@@ -7,55 +7,59 @@ import Pagination from '@/Shared/Pagination';
 import Filter from './Filter';
 import SmallButton from "@/Shared/SmallButton";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-import {connect} from 'react-redux';
+import {connect } from 'react-redux';
 import { compose } from 'redux';
 import ViewModal from './ViewModal';
-import { Inertia } from '@inertiajs/inertia';
+
 import { usePrevious } from 'react-use';
-import { getUrlQuery } from '@/utils';
+
 import Test from "@s/Test";
-import {setCurrentItem} from './Redux/actions';
+import {setCurrentItem, sortNotes} from './Redux/actions';
+import notesReducer from './Redux/reducer.js';
+import notesSaga from './Redux/saga.js';
+import withReducer from "@/Hocs/withReducer"
+import withSaga from "@/Hocs/withSaga"
+import { getUrlQuery } from '@/utils';
 
 const EditModal = lazy(() => import('./EditModal'));
 const CreateModal = lazy(() => import('./CreateModal'));
 
-function NotesIndex({currentItem, setCurrentItem})  {
-  const {categories, errors: oldErrors, items, direction: sDdirection } = usePage().props;
+
+
+function NotesIndex({setCurrentItem,sortNotes})  {
+  
+
+  const {categories, errors: oldErrors, items, direction:defaultDirection} = usePage().props;
   const { data, meta: { links } } = items;
 
   const [errors, setErrors] = useState(oldErrors);
 
-  const [sort, setSort] = useState('id');
-  const [direction, setDirection] = useState(sDdirection);
-
   const [itemId, setItemId] = useState(null);
-  //const [currentItem, setcurrentItem] = useState(null);
-
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
   const [viewIsOpen, setViewIsOpen] = useState(false);
   const [editIsOpen, setEditIsOpen] = useState(false);
   const [createIsOpen, setCreateIsOpen] = useState(false);
 
-  
+
   useEffect(() => {
     setErrors({...oldErrors});
   },[oldErrors])
 
 
-  const prevDirection = usePrevious(direction);
+ // const prevDirection = usePrevious(direction);
 
-  useEffect(() => {
-    if(!prevDirection) {return}
-    console.log('567');
-    let query = getUrlQuery();
-      Inertia.get(route(route().current()), {...query, direction, sort}, {
-        //preserveScroll: true,
-        replace: true,
-        preserveState: true,
-        only: ['items','flash'],
-    });
+  // useEffect(() => {
+  //   if(!prevDirection) {return}
+  //   console.log('567');
+  //   let query = getUrlQuery();
+  //     Inertia.get(route(route().current()), {...query, direction, sort}, {
+  //       //preserveScroll: true,
+  //       replace: true,
+  //       preserveState: true,
+  //       only: ['items','flash'],
+  //   });
 
-  },[direction, sort])
+  // },[direction, sort])
 
   function onCreateOpen ()  {
     setErrors({});
@@ -81,14 +85,22 @@ function NotesIndex({currentItem, setCurrentItem})  {
   }
 
   function sortHanle(e, sort) {
-
       e.preventDefault;
-      setSort(sort);
-      if(!direction || direction == 'asc') {
-        setDirection('desc')
-      } else {
-        setDirection('asc')
+      
+      let query = getUrlQuery();
+      let direction = defaultDirection;
+
+      if(query.direction) {
+        direction = query.direction;
       }
+
+      if(direction == 'asc') {
+        direction = 'desc'
+      } else {
+        direction = 'asc'
+      }
+
+      sortNotes({...query, direction, sort });
   }
 
   return (
@@ -98,21 +110,12 @@ function NotesIndex({currentItem, setCurrentItem})  {
       <div>
         <h1 className="mb-8 text-3xl font-bold">Notes</h1>
         <div className="mb-6">
-        
-            
             <SmallButton className="btn-indigo focus:outline-none mb-5"
                 onClick={onCreateOpen} >
                                 
                 <span>Create</span>
             </SmallButton>
             <Filter />
-          {/* <InertiaLink
-            className="btn-indigo focus:outline-none"
-            href={route('notes.create')}
-          >
-            <span>Create</span>
-            <span className="hidden md:inline"> Note</span>
-          </InertiaLink> */}
         </div>
         {/* <Test/> */}
         <div className="overflow-x-auto bg-white rounded shadow">
@@ -197,31 +200,27 @@ function NotesIndex({currentItem, setCurrentItem})  {
       </div>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <CreateModal 
-          setErrors={setErrors}
-          open={createIsOpen} 
-          setOpen={setCreateIsOpen}
-          errors={errors}
-          categories={categories}
-        />
-        
-        <EditModal 
-          editIsOpen={editIsOpen} 
-          errors={errors}
-          categories={categories}
-          setEditIsOpen={setEditIsOpen}
-          //currentItem={currentItem}
-        />
+          <CreateModal 
+            setErrors={setErrors}
+            open={createIsOpen} 
+            setOpen={setCreateIsOpen}
+            errors={errors}
+            categories={categories}
+          />
+          
+          <EditModal 
+            editIsOpen={editIsOpen} 
+            errors={errors}
+            categories={categories}
+            setEditIsOpen={setEditIsOpen}
+          />
       </Suspense>
       
 
       <ViewModal
         viewIsOpen={viewIsOpen} 
         setViewIsOpen={setViewIsOpen}
-        //currentItem={currentItem}
       />
-
-      
 
       <DeleteConfirmModal 
         open={confirmIsOpen}
@@ -234,7 +233,6 @@ function NotesIndex({currentItem, setCurrentItem})  {
 };
 
 
-
 const mapStateToProps = (state) => {
     return {
       currentItem: state.notes.currentItem,
@@ -242,12 +240,18 @@ const mapStateToProps = (state) => {
 }
 
 const actions = {
-  setCurrentItem
+    setCurrentItem,
+    sortNotes,
 }
 
 const withConnect = connect( mapStateToProps, actions );
 
-export default compose( withConnect, memo )(NotesIndex);
+export default compose(
+    withReducer('notes', notesReducer), 
+    withSaga('notes', notesSaga),
+    withConnect,
+    memo 
+  )(NotesIndex);
 
 
 
