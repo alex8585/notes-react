@@ -22,14 +22,14 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 
-class test extends Command
+class ChromeParcer extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ChromeProcess';
+    protected $signature = 'chrome1';
 
     /**
      * The console command description.
@@ -55,16 +55,16 @@ class test extends Command
      */
     public function handle(TestEventListener $h)
     {
-        Category::factory()->count(3)
-            ->has(Note::factory()->count(15))
-            ->create();
-        //Note::factory()->count(5)->create();
+        // Category::factory()->count(3)
+        //     ->has(Note::factory()->count(15))
+        //     ->create();
+        // //Note::factory()->count(5)->create();
 
 
 
 
 
-        dd('776');
+        // dd('776');
         $process = (new ChromeProcess)->toProcess();
         $process->start();
         $options = (new ChromeOptions)->addArguments(['--disable-gpu',]);
@@ -79,8 +79,8 @@ class test extends Command
         $browser->waitFor('#technicals-root')->click('#technicals-root div div div div div div div div:nth-child(4)');
 
 
-        $email = $browser->text('#technicals-root');
-        dump($email);
+        $technicalsRoot = $browser->text('#technicals-root');
+        dump($technicalsRoot);
 
 
         //$browser->quit();
